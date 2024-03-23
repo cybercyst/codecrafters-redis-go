@@ -9,6 +9,8 @@ import (
 	"syscall"
 )
 
+const redisPort = 6379
+
 func main() {
 	c := make(chan os.Signal)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
@@ -20,11 +22,12 @@ func main() {
 		os.Exit(0)
 	}()
 
-	l, err := net.Listen("tcp", "0.0.0.0:6379")
+	l, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", redisPort))
 	if err != nil {
-		fmt.Println("Failed to bind to port 6379")
+		fmt.Printf("Failed to bind to port %d\n", redisPort)
 		os.Exit(1)
 	}
+	fmt.Printf("Listening on port %d\n", redisPort)
 
 	for {
 		conn, err := l.Accept()
