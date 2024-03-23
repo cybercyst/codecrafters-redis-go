@@ -11,6 +11,29 @@ import (
 
 const redisPort = 6379
 
+func handleClient(conn net.Conn) {
+	buff := make([]byte, 1024)
+	for {
+		_, err := conn.Read(buff)
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			fmt.Println("Error reading from client: ", err.Error())
+			os.Exit(1)
+		}
+		// fmt.Println("Received message from client: ")
+		// fmt.Println(string(buff))
+
+		_, err = conn.Write([]byte("+PONG\r\n"))
+		if err != nil {
+			fmt.Println("Error writing to client: ", err.Error())
+			os.Exit(1)
+		}
+	}
+}
+
 func main() {
 	c := make(chan os.Signal)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
@@ -37,25 +60,6 @@ func main() {
 		}
 		defer conn.Close()
 
-		buff := make([]byte, 1024)
-		for {
-			_, err := conn.Read(buff)
-			if err == io.EOF {
-				break
-			}
-
-			if err != nil {
-				fmt.Println("Error reading from client: ", err.Error())
-				os.Exit(1)
-			}
-			// fmt.Println("Received message from client: ")
-			// fmt.Println(string(buff))
-
-			_, err = conn.Write([]byte("+PONG\r\n"))
-			if err != nil {
-				fmt.Println("Error writing to client: ", err.Error())
-				os.Exit(1)
-			}
-		}
+		go handleClient(conn)
 	}
 }
