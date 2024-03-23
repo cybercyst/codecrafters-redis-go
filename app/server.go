@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"os"
 )
@@ -21,9 +22,26 @@ func main() {
 	}
 	defer conn.Close()
 
-	_, err = conn.Write([]byte("+PONG\r\n"))
-	if err != nil {
-		fmt.Println("Error writing to client: ", err.Error())
-		os.Exit(1)
+	buff := make([]byte, 1024)
+	for {
+		_, err := conn.Read(buff)
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			fmt.Println("Error reading from client: ", err.Error())
+			os.Exit(1)
+		}
+		fmt.Println("Received message from client: ")
+		fmt.Println(string(buff))
+
+		_, err = conn.Write([]byte("+PONG\r\n"))
+		if err != nil {
+			fmt.Println("Error writing to client: ", err.Error())
+			os.Exit(1)
+		}
 	}
+
+	fmt.Println("Exiting server...")
 }
