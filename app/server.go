@@ -45,8 +45,8 @@ func main() {
 				fmt.Println("Error reading from client: ", err.Error())
 				os.Exit(1)
 			}
-			fmt.Println("Received message from client: ")
-			fmt.Println(string(buff))
+			// fmt.Println("Received message from client: ")
+			// fmt.Println(string(buff))
 
 			_, err = conn.Write([]byte("+PONG\r\n"))
 			if err != nil {
