@@ -20,6 +20,10 @@ func parseRequest(reader io.Reader) ([]any, error) {
 	scanner.Split(bufio.ScanLines)
 
 	tokens, err := parseToken(scanner)
+	if err == io.EOF {
+		return nil, err
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("error parsing request: %v", err)
 	}

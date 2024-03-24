@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"os/signal"
@@ -35,41 +36,47 @@ func handleEcho(conn net.Conn, msg string) {
 func handleClientConnection(conn net.Conn) {
 	defer conn.Close()
 
-	cmds, err := parseRequest(conn)
-	if err != nil {
-		fmt.Printf("Error reading from client: %s\n", err.Error())
-		return
-	}
-
-	if len(cmds) < 1 {
-		fmt.Println("No commands parsed!")
-		return
-	}
-
-	// fmt.Println("Received message from client: ")
-	// fmt.Println(cmds)
-
-	cmdStr, ok := cmds[0].(string)
-	if !ok {
-		fmt.Printf("unable to parse command as string: %s", cmdStr)
-		return
-	}
-	switch Command(strings.ToLower(cmdStr)) {
-	case Ping:
-		handlePing(conn)
-		break
-	case Echo:
-		var b strings.Builder
-		for _, cmd := range cmds[1:] {
-			cmdStr, ok := cmd.(string)
-			if !ok {
-				fmt.Printf("error parsing command as string: %v", cmd)
-				break
-			}
-			fmt.Fprintf(&b, "%s ", cmdStr)
+	for {
+		cmds, err := parseRequest(conn)
+		if err == io.EOF {
+			break
 		}
-		handleEcho(conn, strings.TrimSpace(b.String()))
-		break
+
+		if err != nil {
+			fmt.Printf("Error reading from client: %s\n", err.Error())
+			return
+		}
+
+		if len(cmds) < 1 {
+			fmt.Println("No commands parsed!")
+			return
+		}
+
+		// fmt.Println("Received message from client: ")
+		// fmt.Println(cmds)
+
+		cmdStr, ok := cmds[0].(string)
+		if !ok {
+			fmt.Printf("unable to parse command as string: %s", cmdStr)
+			return
+		}
+		switch Command(strings.ToLower(cmdStr)) {
+		case Ping:
+			handlePing(conn)
+			break
+		case Echo:
+			var b strings.Builder
+			for _, cmd := range cmds[1:] {
+				cmdStr, ok := cmd.(string)
+				if !ok {
+					fmt.Printf("error parsing command as string: %v", cmd)
+					break
+				}
+				fmt.Fprintf(&b, "%s ", cmdStr)
+			}
+			handleEcho(conn, strings.TrimSpace(b.String()))
+			break
+		}
 	}
 }
 
