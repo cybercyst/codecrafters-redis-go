@@ -1,43 +1,59 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
+)
 
-var memStore map[string]string = make(map[string]string)
-
-func handlePing() string {
+func (srv *Server) handlePing() string {
 	return "+PONG\r\n"
 }
 
-func handleEcho(args []string) string {
+func (srv *Server) handleEcho(args []string) string {
 	msg := args[0]
 	return encodeBulkString(msg)
 }
 
-func handleSet(args []string) string {
+func (srv *Server) handleSet(args []string) (string, error) {
 	key := args[0]
 	val := args[1]
-	memStore[key] = val
 
-	return encodeSimpleString("OK")
+	subCmd := ""
+	if len(args) > 2 {
+		subCmd = strings.ToLower(args[2])
+	}
+
+	var expiry time.Duration
+	switch subCmd {
+	case "ex":
+		expiryMs, err := strconv.ParseInt(args[3], 10, 64)
+		if err != nil {
+			return "", err
+		}
+		expiry = time.Millisecond * time.Duration(expiryMs)
+	}
+
+	srv.store.Set(key, val, expiry)
+	return encodeSimpleString("OK"), nil
 }
 
-func handleGet(args []string) string {
+func (srv *Server) handleGet(args []string) string {
 	key := args[0]
-	val := memStore[key]
-
-	return encodeBulkString(val)
+	return encodeBulkString(srv.store.Get(key))
 }
 
-func handle(cmd string, args []string) (string, error) {
+func (srv *Server) handle(cmd string, args []string) (string, error) {
 	switch Command(cmd) {
 	case Ping:
-		return handlePing(), nil
+		return srv.handlePing(), nil
 	case Echo:
-		return handleEcho(args), nil
+		return srv.handleEcho(args), nil
 	case Set:
-		return handleSet(args), nil
+		return srv.handleSet(args)
 	case Get:
-		return handleGet(args), nil
+		return srv.handleGet(args), nil
 	default:
 		return "", fmt.Errorf("unknown command %s", cmd)
 	}

@@ -20,7 +20,17 @@ const (
 	Get          = "get"
 )
 
-func handleClientConnection(conn net.Conn) {
+type Server struct {
+	store Store
+}
+
+func NewServer() *Server {
+	return &Server{
+		store: *NewStore(),
+	}
+}
+
+func (srv *Server) handleClientConnection(conn net.Conn) {
 	defer conn.Close()
 
 	for {
@@ -34,10 +44,11 @@ func handleClientConnection(conn net.Conn) {
 			return
 		}
 
-		fmt.Println(cmd)
-		fmt.Println(args)
+		// fmt.Println("Received from client:")
+		// fmt.Println("Cmd: ", cmd)
+		// fmt.Println("Args: ", args)
 
-		resp, err := handle(cmd, args)
+		resp, err := srv.handle(cmd, args)
 		if err != nil {
 			fmt.Printf("Error handling command %s: %s\n", cmd, err.Error())
 		}
@@ -57,6 +68,8 @@ func main() {
 		os.Exit(0)
 	}()
 
+	srv := NewServer()
+
 	l, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", redisPort))
 	if err != nil {
 		fmt.Printf("Failed to bind to port %d\n", redisPort)
@@ -72,6 +85,6 @@ func main() {
 		}
 		defer conn.Close()
 
-		go handleClientConnection(conn)
+		go srv.handleClientConnection(conn)
 	}
 }
