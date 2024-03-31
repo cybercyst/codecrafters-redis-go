@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -14,7 +15,9 @@ func (e Entry) IsExpired() bool {
 		return false
 	}
 
-	return time.Now() == e.Expiry || time.Now().After(e.Expiry)
+	fmt.Println("now: ", time.Now())
+	fmt.Println("expiry: ", e.Expiry)
+	return time.Now().After(e.Expiry)
 }
 
 func NewEntry(val string, expirationDuration time.Duration) Entry {
@@ -43,6 +46,7 @@ func NewStore() *Store {
 
 func (store *Store) Set(key, value string, expiry time.Duration) {
 	entry := NewEntry(value, expiry)
+	fmt.Println("Entry is:", entry)
 	store.db[key] = &entry
 }
 
