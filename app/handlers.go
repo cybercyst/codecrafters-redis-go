@@ -27,7 +27,7 @@ func (srv *Server) handleSet(args []string) (string, error) {
 
 	var expiry time.Duration
 	switch subCmd {
-	case "ex":
+	case "px":
 		expiryMs, err := strconv.ParseInt(args[3], 10, 64)
 		if err != nil {
 			return "", err
