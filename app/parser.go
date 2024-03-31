@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 )
 
 type TokenType byte
@@ -15,24 +16,32 @@ const (
 	Integer              = ':'
 )
 
-func parseRequest(reader io.Reader) ([]any, error) {
+func parseRequest(reader io.Reader) (string, []string, error) {
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
 
 	tokens, err := parseToken(scanner)
 	if err == io.EOF {
-		return nil, err
+		return "", nil, err
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("error parsing request: %v", err)
+		return "", nil, fmt.Errorf("error parsing request: %v", err)
 	}
 
 	switch tokens.(type) {
 	case []any:
-		return tokens.([]any), nil
+		tokens := tokens.([]any)
+		cmd := strings.ToLower(tokens[0].(string))
+		args := []string{}
+		if len(tokens) > 1 {
+			for _, token := range tokens[1:] {
+				args = append(args, token.(string))
+			}
+		}
+		return cmd, args, nil
 	default:
-		return nil, fmt.Errorf("failed to parse slice of commands")
+		return "", nil, fmt.Errorf("failed to parse slice of commands")
 	}
 }
 

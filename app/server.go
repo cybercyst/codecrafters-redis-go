@@ -6,7 +6,6 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 )
 
@@ -17,27 +16,15 @@ type Command string
 const (
 	Ping Command = "ping"
 	Echo         = "echo"
+	Set          = "set"
+	Get          = "get"
 )
-
-func handlePing(conn net.Conn) {
-	_, err := conn.Write([]byte("+PONG\r\n"))
-	if err != nil {
-		fmt.Printf("Error writing to client: %s\n", err.Error())
-	}
-}
-
-func handleEcho(conn net.Conn, msg string) {
-	_, err := conn.Write([]byte(encodeBulkString(msg)))
-	if err != nil {
-		fmt.Printf("Error writing to client: %s\n", err.Error())
-	}
-}
 
 func handleClientConnection(conn net.Conn) {
 	defer conn.Close()
 
 	for {
-		cmds, err := parseRequest(conn)
+		cmd, args, err := parseRequest(conn)
 		if err == io.EOF {
 			break
 		}
@@ -47,36 +34,15 @@ func handleClientConnection(conn net.Conn) {
 			return
 		}
 
-		if len(cmds) < 1 {
-			fmt.Println("No commands parsed!")
-			return
+		fmt.Println(cmd)
+		fmt.Println(args)
+
+		resp, err := handle(cmd, args)
+		if err != nil {
+			fmt.Printf("Error handling command %s: %s\n", cmd, err.Error())
 		}
 
-		// fmt.Println("Received message from client: ")
-		// fmt.Println(cmds)
-
-		cmdStr, ok := cmds[0].(string)
-		if !ok {
-			fmt.Printf("unable to parse command as string: %s", cmdStr)
-			return
-		}
-		switch Command(strings.ToLower(cmdStr)) {
-		case Ping:
-			handlePing(conn)
-			break
-		case Echo:
-			var b strings.Builder
-			for _, cmd := range cmds[1:] {
-				cmdStr, ok := cmd.(string)
-				if !ok {
-					fmt.Printf("error parsing command as string: %v", cmd)
-					break
-				}
-				fmt.Fprintf(&b, "%s ", cmdStr)
-			}
-			handleEcho(conn, strings.TrimSpace(b.String()))
-			break
-		}
+		_, _ = conn.Write([]byte(resp))
 	}
 }
 

@@ -1,26 +1,25 @@
 package main
 
 import (
-	"reflect"
 	"slices"
 	"strings"
 	"testing"
 )
 
-func TestParseHelloWorldArray(t *testing.T) {
+func TestParseRequest(t *testing.T) {
 	req := strings.NewReader("*2\r\n$5\r\nhello\r\n$5\r\nworld\r\n")
-	want := []any{"hello", "world"}
-	got, err := parseRequest(req)
+	wantCmd := "hello"
+	wantArgs := []string{"world"}
+	gotCmd, gotArgs, err := parseRequest(req)
 	if err != nil {
 		t.Fatalf("got unexpected err %v", err)
 	}
 
-	v := reflect.ValueOf(got)
-	if v.Kind() != reflect.Slice {
-		t.Fatalf("got unexpected type %T", t)
+	if gotCmd != "hello" {
+		t.Fatalf("got %v, wanted %v", gotCmd, wantCmd)
 	}
 
-	if !slices.Equal(got, want) {
-		t.Fatalf(`parsing %q should return %#v, got %#v`, req, want, got)
+	if slices.Equal(gotArgs, wantArgs) {
+		t.Fatalf("got %v, wanted %v", gotArgs, wantArgs)
 	}
 }
