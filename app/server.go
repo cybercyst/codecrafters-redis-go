@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
 	"net"
 	"os"
 	"os/signal"
@@ -17,6 +16,7 @@ const (
 	Echo         = "echo"
 	Set          = "set"
 	Get          = "get"
+	Info         = "info"
 )
 
 type Server struct {
@@ -43,39 +43,11 @@ func (srv *Server) Listen() error {
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			fmt.Println("Error accepting connection: ", err.Error())
-			os.Exit(1)
+			return err
 		}
 		defer conn.Close()
 
 		go srv.handleClientConnection(conn)
-	}
-}
-
-func (srv *Server) handleClientConnection(conn net.Conn) {
-	defer conn.Close()
-
-	for {
-		cmd, args, err := parseRequest(conn)
-		if err == io.EOF {
-			break
-		}
-
-		if err != nil {
-			fmt.Printf("Error reading from client: %s\n", err.Error())
-			return
-		}
-
-		// fmt.Println("Received from client:")
-		// fmt.Println("Cmd: ", cmd)
-		// fmt.Println("Args: ", args)
-
-		resp, err := srv.handle(cmd, args)
-		if err != nil {
-			fmt.Printf("Error handling command %s: %s\n", cmd, err.Error())
-		}
-
-		_, _ = conn.Write([]byte(resp))
 	}
 }
 
