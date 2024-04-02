@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"net"
@@ -8,8 +9,6 @@ import (
 	"os/signal"
 	"syscall"
 )
-
-const redisPort = 6379
 
 type Command string
 
@@ -21,12 +20,35 @@ const (
 )
 
 type Server struct {
-	store Store
+	address string
+	port    int
+	store   Store
 }
 
-func NewServer() *Server {
+func NewServer(address string, port int) *Server {
 	return &Server{
-		store: *NewStore(),
+		address: address,
+		port:    port,
+		store:   *NewStore(),
+	}
+}
+
+func (srv *Server) Listen() error {
+	l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", srv.address, srv.port))
+	if err != nil {
+		return fmt.Errorf("failed to bind to port %d\n", srv.port)
+	}
+	fmt.Printf("Listening on port %d\n", srv.port)
+
+	for {
+		conn, err := l.Accept()
+		if err != nil {
+			fmt.Println("Error accepting connection: ", err.Error())
+			os.Exit(1)
+		}
+		defer conn.Close()
+
+		go srv.handleClientConnection(conn)
 	}
 }
 
@@ -68,23 +90,13 @@ func main() {
 		os.Exit(0)
 	}()
 
-	srv := NewServer()
+	portFlag := flag.Int("port", 6379, "the port for your redis server")
+	flag.Parse()
 
-	l, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", redisPort))
+	srv := NewServer("0.0.0.0", *portFlag)
+	err := srv.Listen()
 	if err != nil {
-		fmt.Printf("Failed to bind to port %d\n", redisPort)
+		fmt.Println(err)
 		os.Exit(1)
-	}
-	fmt.Printf("Listening on port %d\n", redisPort)
-
-	for {
-		conn, err := l.Accept()
-		if err != nil {
-			fmt.Println("Error accepting connection: ", err.Error())
-			os.Exit(1)
-		}
-		defer conn.Close()
-
-		go srv.handleClientConnection(conn)
 	}
 }
