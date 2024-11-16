@@ -13,10 +13,10 @@ type Command string
 
 const (
 	Ping Command = "ping"
-	Echo         = "echo"
-	Set          = "set"
-	Get          = "get"
-	Info         = "info"
+	Echo Command = "echo"
+	Set  Command = "set"
+	Get  Command = "get"
+	Info Command = "info"
 )
 
 type Server struct {
@@ -52,7 +52,7 @@ func (srv *Server) Listen() error {
 }
 
 func main() {
-	c := make(chan os.Signal)
+	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {

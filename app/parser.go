@@ -12,8 +12,8 @@ type TokenType byte
 
 const (
 	BulkString TokenType = '$'
-	Array                = '*'
-	Integer              = ':'
+	Array      TokenType = '*'
+	Integer    TokenType = ':'
 )
 
 func parseRequest(reader io.Reader) (string, []string, error) {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -53,7 +52,7 @@ func (srv *Server) handleInfo(args []string) (string, error) {
 	case "replication":
 		return encodeBulkString("role:master"), nil
 	default:
-		return "", errors.New(fmt.Sprintf("unknown info sub-command %s", subCmd))
+		return "", fmt.Errorf("unknown info sub-command %s", subCmd)
 	}
 }
 
