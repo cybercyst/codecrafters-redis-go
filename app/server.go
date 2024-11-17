@@ -6,6 +6,8 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strconv"
+	"strings"
 	"syscall"
 )
 
@@ -22,18 +24,34 @@ const (
 type Server struct {
 	address string
 	port    int
-	store   Store
 }
 
-func NewServer(address string, port int) *Server {
-	return &Server{
-		address: address,
-		port:    port,
-		store:   *NewStore(),
+type RedisServer struct {
+	*Server
+	store  Store
+	master *Server
+}
+
+func (srv *RedisServer) Role() string {
+	if srv.master != nil {
+		return "slave"
+	}
+
+	return "master"
+}
+
+func NewRedisServer(address string, port int, master *Server) *RedisServer {
+	return &RedisServer{
+		Server: &Server{
+			address: address,
+			port:    port,
+		},
+		master: master,
+		store:  *NewStore(),
 	}
 }
 
-func (srv *Server) Listen() error {
+func (srv *RedisServer) Listen() error {
 	l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", srv.address, srv.port))
 	if err != nil {
 		return fmt.Errorf("failed to bind to port %d\n", srv.port)
@@ -51,6 +69,31 @@ func (srv *Server) Listen() error {
 	}
 }
 
+func parseMaster(replicaFlag string) *Server {
+	if replicaFlag == "" {
+		return nil
+	}
+
+	chunks := strings.SplitN(replicaFlag, " ", 2)
+
+	address := chunks[0]
+	portStr := chunks[1]
+
+	if address == "" || portStr == "" {
+		return nil
+	}
+
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		return nil
+	}
+
+	return &Server{
+		address: address,
+		port:    port,
+	}
+}
+
 func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
@@ -63,9 +106,12 @@ func main() {
 	}()
 
 	portFlag := flag.Int("port", 6379, "the port for your redis server")
+	replicaFlag := flag.String("replicaof", "", "the master host and master port")
 	flag.Parse()
 
-	srv := NewServer("0.0.0.0", *portFlag)
+	master := parseMaster(*replicaFlag)
+
+	srv := NewRedisServer("0.0.0.0", *portFlag, master)
 	err := srv.Listen()
 	if err != nil {
 		fmt.Println(err)

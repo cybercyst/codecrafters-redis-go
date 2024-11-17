@@ -9,16 +9,16 @@ import (
 	"time"
 )
 
-func (srv *Server) handlePing() string {
+func (srv *RedisServer) handlePing() string {
 	return "+PONG\r\n"
 }
 
-func (srv *Server) handleEcho(args []string) string {
+func (srv *RedisServer) handleEcho(args []string) string {
 	msg := args[0]
 	return encodeBulkString(msg)
 }
 
-func (srv *Server) handleSet(args []string) (string, error) {
+func (srv *RedisServer) handleSet(args []string) (string, error) {
 	key := args[0]
 	val := args[1]
 
@@ -41,22 +41,22 @@ func (srv *Server) handleSet(args []string) (string, error) {
 	return encodeSimpleString("OK"), nil
 }
 
-func (srv *Server) handleGet(args []string) string {
+func (srv *RedisServer) handleGet(args []string) string {
 	key := args[0]
 	return encodeBulkString(srv.store.Get(key))
 }
 
-func (srv *Server) handleInfo(args []string) (string, error) {
+func (srv *RedisServer) handleInfo(args []string) (string, error) {
 	subCmd := args[0]
 	switch subCmd {
 	case "replication":
-		return encodeBulkString("role:master"), nil
+		return encodeBulkString(fmt.Sprintf("role:%s", srv.Role())), nil
 	default:
 		return "", fmt.Errorf("unknown info sub-command %s", subCmd)
 	}
 }
 
-func (srv *Server) handle(cmd string, args []string) (string, error) {
+func (srv *RedisServer) handle(cmd string, args []string) (string, error) {
 	switch Command(cmd) {
 	case Ping:
 		return srv.handlePing(), nil
@@ -73,7 +73,7 @@ func (srv *Server) handle(cmd string, args []string) (string, error) {
 	}
 }
 
-func (srv *Server) handleClientConnection(conn net.Conn) {
+func (srv *RedisServer) handleClientConnection(conn net.Conn) {
 	defer conn.Close()
 
 	for {
@@ -86,10 +86,6 @@ func (srv *Server) handleClientConnection(conn net.Conn) {
 			fmt.Printf("Error reading from client: %s\n", err.Error())
 			return
 		}
-
-		// fmt.Println("Received from client:")
-		// fmt.Println("Cmd: ", cmd)
-		// fmt.Println("Args: ", args)
 
 		resp, err := srv.handle(cmd, args)
 		if err != nil {
