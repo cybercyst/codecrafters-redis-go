@@ -50,7 +50,12 @@ func (srv *RedisServer) handleInfo(args []string) (string, error) {
 	subCmd := args[0]
 	switch subCmd {
 	case "replication":
-		return encodeBulkString(fmt.Sprintf("role:%s", srv.Role())), nil
+		resp := strings.TrimSpace(fmt.Sprintf(`
+role:%s
+master_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb
+master_repl_offset:0
+		`, srv.Role()))
+		return encodeBulkString(resp), nil
 	default:
 		return "", fmt.Errorf("unknown info sub-command %s", subCmd)
 	}
