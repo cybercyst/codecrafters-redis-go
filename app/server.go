@@ -28,26 +28,26 @@ type Server struct {
 
 type RedisServer struct {
 	*Server
-	store  Store
-	master *Server
+	store Store
+	slave *Slave
 }
 
 func (srv *RedisServer) Role() string {
-	if srv.master != nil {
+	if srv.slave != nil {
 		return "slave"
 	}
 
 	return "master"
 }
 
-func NewRedisServer(address string, port int, master *Server) *RedisServer {
+func NewRedisServer(address string, port int, slave *Slave) *RedisServer {
 	return &RedisServer{
 		Server: &Server{
 			address: address,
 			port:    port,
 		},
-		master: master,
-		store:  *NewStore(),
+		slave: slave,
+		store: *NewStore(),
 	}
 }
 
@@ -69,7 +69,7 @@ func (srv *RedisServer) Listen() error {
 	}
 }
 
-func parseMaster(replicaFlag string) *Server {
+func parseReplica(replicaFlag string) *Server {
 	if replicaFlag == "" {
 		return nil
 	}
@@ -109,10 +109,14 @@ func main() {
 	replicaFlag := flag.String("replicaof", "", "the master host and master port")
 	flag.Parse()
 
-	master := parseMaster(*replicaFlag)
+	slave, err := NewSlave(parseReplica(*replicaFlag))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-	srv := NewRedisServer("0.0.0.0", *portFlag, master)
-	err := srv.Listen()
+	srv := NewRedisServer("0.0.0.0", *portFlag, slave)
+	err = srv.Listen()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
