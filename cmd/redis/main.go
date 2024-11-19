@@ -30,16 +30,18 @@ func run(ctx context.Context) error {
 	replicaFlag := flag.String("replicaof", "", "the master host and master port")
 	flag.Parse()
 
-	var slave *replica.MasterClient
+	var masterClient *replica.MasterClient
 	if *replicaFlag != "" {
-		slave, err := replica.NewMasterClient(parseReplica(*replicaFlag))
+		masterAddress, masterPort := parseReplica(*replicaFlag)
+		m, err := replica.NewMasterClient(masterAddress, masterPort, *portFlag)
 		if err != nil {
 			return fmt.Errorf("error connecting to master: %w", err)
 		}
-		defer slave.Close()
+		masterClient = m
+		defer m.Close()
 	}
 
-	srv := server.NewRedisServer("0.0.0.0", *portFlag, slave)
+	srv := server.NewRedisServer("0.0.0.0", *portFlag, masterClient)
 	err := srv.Listen(ctx)
 	if err != nil {
 		return fmt.Errorf("error starting server: %w", err)

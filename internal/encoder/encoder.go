@@ -4,13 +4,23 @@ import (
 	"fmt"
 )
 
-func EncodeBulkString(val string) string {
-	if val == "" {
-		return "$-1\r\n"
+func EncodeArrayBulkString(val []string) []byte {
+	resp := []byte(fmt.Sprintf("*%d\r\n", len(val)))
+
+	for _, v := range val {
+		resp = append(resp, EncodeBulkString(v)...)
 	}
-	return fmt.Sprintf("$%d\r\n%s\r\n", len(val), val)
+
+	return []byte(resp)
 }
 
-func EncodeSimpleString(val string) string {
-	return fmt.Sprintf("+%s\r\n", val)
+func EncodeBulkString(val string) []byte {
+	if val == "" {
+		return []byte("$-1\r\n")
+	}
+	return []byte(fmt.Sprintf("$%d\r\n%s\r\n", len(val), val))
+}
+
+func EncodeSimpleString(val string) []byte {
+	return []byte(fmt.Sprintf("+%s\r\n", val))
 }

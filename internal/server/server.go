@@ -39,16 +39,16 @@ func (srv *RedisServer) Listen(ctx context.Context) error {
 	defer cancel()
 
 	go func() {
-		l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", srv.address, srv.port))
+		listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", srv.address, srv.port))
 		if err != nil {
 			slog.Error("failed to bind to port", slog.Int("port", srv.port))
 			cancel()
 		}
-		defer l.Close()
+		defer listener.Close()
 		slog.Info("Redis started", slog.Int("port", srv.port))
 
 		for {
-			conn, err := l.Accept()
+			conn, err := listener.Accept()
 			if err != nil {
 				slog.Error("failed to receive data", slog.Any("error", err))
 				cancel()

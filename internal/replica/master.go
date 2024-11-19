@@ -1,8 +1,12 @@
 package replica
 
 import (
+	"bufio"
 	"fmt"
 	"net"
+	"strings"
+
+	"github.com/codecrafters-io/redis-starter-go/internal/encoder"
 )
 
 type MasterClient struct {
@@ -15,27 +19,47 @@ func (m *MasterClient) Close() {
 	m.conn.Close()
 }
 
-func NewMasterClient(address string, port int) (*MasterClient, error) {
-	if address == "" {
-		return nil, nil
-	}
-	if port == 0 {
-		return nil, nil
+func (m *MasterClient) RequestAndResponse(req, resp string) error {
+	encodedReq := encoder.EncodeArrayBulkString(strings.Split(req, " "))
+	_, err := (m.conn).Write(encodedReq)
+	if err != nil {
+		return fmt.Errorf("error sending message %s: %w", req, err)
 	}
 
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", address, port))
-	if err != nil {
-		return nil, fmt.Errorf("error establishing connection to %s:%d: %w", address, port, err)
+	expectedResp := encoder.EncodeSimpleString(resp)
+	message, _ := bufio.NewReader(m.conn).ReadString('\n')
+	if string(expectedResp) != message {
+		return fmt.Errorf("expected response %s, got %s", resp, message)
 	}
 
-	_, err = conn.Write([]byte("*1\r\n$4\r\nPING\r\n"))
+	return nil
+}
+
+func NewMasterClient(masterAddress string, masterPort, listeningPort int) (*MasterClient, error) {
+	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", masterAddress, masterPort))
 	if err != nil {
+		return nil, fmt.Errorf("error establishing connection to %s:%d: %w", masterAddress, masterPort, err)
+	}
+
+	client := &MasterClient{
+		address: masterAddress,
+		port:    masterPort,
+		conn:    conn,
+	}
+
+	if err = client.RequestAndResponse("PING", "PONG"); err != nil {
 		return nil, fmt.Errorf("error sending PING: %w", err)
 	}
 
-	return &MasterClient{
-		address: address,
-		port:    port,
-		conn:    conn,
-	}, nil
+	msg := fmt.Sprintf("REPLCONF listening-port %d", listeningPort)
+	if err = client.RequestAndResponse(msg, "OK"); err != nil {
+		return nil, fmt.Errorf("error sending %s: %w", msg, err)
+	}
+
+	msg = "REPLCONF capa psync2"
+	if err = client.RequestAndResponse(msg, "OK"); err != nil {
+		return nil, fmt.Errorf("error sending %s: %w", msg, err)
+	}
+
+	return client, nil
 }

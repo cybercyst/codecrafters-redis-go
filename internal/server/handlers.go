@@ -11,16 +11,16 @@ import (
 	"github.com/codecrafters-io/redis-starter-go/internal/encoder"
 )
 
-func (srv *RedisServer) handlePing() string {
-	return "+PONG\r\n"
+func (srv *RedisServer) handlePing() []byte {
+	return []byte("+PONG\r\n")
 }
 
-func (srv *RedisServer) handleEcho(args []string) string {
+func (srv *RedisServer) handleEcho(args []string) []byte {
 	msg := args[0]
 	return encoder.EncodeBulkString(msg)
 }
 
-func (srv *RedisServer) handleSet(args []string) (string, error) {
+func (srv *RedisServer) handleSet(args []string) ([]byte, error) {
 	key := args[0]
 	val := args[1]
 
@@ -34,7 +34,7 @@ func (srv *RedisServer) handleSet(args []string) (string, error) {
 	case "px":
 		expiryMs, err := strconv.ParseInt(args[3], 10, 64)
 		if err != nil {
-			return "", err
+			return []byte(""), err
 		}
 		expiry = time.Millisecond * time.Duration(expiryMs)
 	}
@@ -43,12 +43,12 @@ func (srv *RedisServer) handleSet(args []string) (string, error) {
 	return encoder.EncodeSimpleString("OK"), nil
 }
 
-func (srv *RedisServer) handleGet(args []string) string {
+func (srv *RedisServer) handleGet(args []string) []byte {
 	key := args[0]
 	return encoder.EncodeBulkString(srv.store.Get(key))
 }
 
-func (srv *RedisServer) handleInfo(args []string) (string, error) {
+func (srv *RedisServer) handleInfo(args []string) ([]byte, error) {
 	subCmd := args[0]
 	switch subCmd {
 	case "replication":
@@ -59,11 +59,11 @@ master_repl_offset:0
 		`, srv.Role()))
 		return encoder.EncodeBulkString(resp), nil
 	default:
-		return "", fmt.Errorf("unknown info sub-command %s", subCmd)
+		return []byte{}, fmt.Errorf("unknown info sub-command %s", subCmd)
 	}
 }
 
-func (srv *RedisServer) handle(cmd string, args []string) (string, error) {
+func (srv *RedisServer) handle(cmd string, args []string) ([]byte, error) {
 	switch Command(cmd) {
 	case Ping:
 		return srv.handlePing(), nil
@@ -76,7 +76,7 @@ func (srv *RedisServer) handle(cmd string, args []string) (string, error) {
 	case Info:
 		return srv.handleInfo(args)
 	default:
-		return "", fmt.Errorf("unknown command %s", cmd)
+		return []byte(""), fmt.Errorf("unknown command %s", cmd)
 	}
 }
 
