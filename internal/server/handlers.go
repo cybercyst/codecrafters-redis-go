@@ -67,6 +67,11 @@ func (srv *RedisServer) handleReplConf(args []string) ([]byte, error) {
 	return encoder.EncodeSimpleString("OK"), nil
 }
 
+func (srv *RedisServer) handlePsync(args []string) ([]byte, error) {
+	replicationID := "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb"
+	return encoder.EncodeSimpleString(fmt.Sprintf("FULLRESYNC %s 0", replicationID)), nil
+}
+
 func (srv *RedisServer) handle(cmd string, args []string) ([]byte, error) {
 	switch Command(cmd) {
 	case Ping:
@@ -81,6 +86,8 @@ func (srv *RedisServer) handle(cmd string, args []string) ([]byte, error) {
 		return srv.handleInfo(args)
 	case ReplConf:
 		return srv.handleReplConf(args)
+	case PSync:
+		return srv.handlePsync(args)
 	default:
 		return []byte(""), fmt.Errorf("unknown command %s", cmd)
 	}

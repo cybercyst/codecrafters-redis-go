@@ -9,4 +9,5 @@ const (
 	Get      Command = "get"
 	Info     Command = "info"
 	ReplConf Command = "replconf"
+	PSync    Command = "psync"
 )
