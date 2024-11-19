@@ -1,8 +1,6 @@
-package main
+package store
 
-import (
-	"time"
-)
+import "time"
 
 type Entry struct {
 	Value  string

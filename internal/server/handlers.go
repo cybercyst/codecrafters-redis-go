@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"fmt"
@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/codecrafters-io/redis-starter-go/internal/encoder"
 )
 
 func (srv *RedisServer) handlePing() string {
@@ -15,7 +17,7 @@ func (srv *RedisServer) handlePing() string {
 
 func (srv *RedisServer) handleEcho(args []string) string {
 	msg := args[0]
-	return encodeBulkString(msg)
+	return encoder.EncodeBulkString(msg)
 }
 
 func (srv *RedisServer) handleSet(args []string) (string, error) {
@@ -38,12 +40,12 @@ func (srv *RedisServer) handleSet(args []string) (string, error) {
 	}
 
 	srv.store.Set(key, val, expiry)
-	return encodeSimpleString("OK"), nil
+	return encoder.EncodeSimpleString("OK"), nil
 }
 
 func (srv *RedisServer) handleGet(args []string) string {
 	key := args[0]
-	return encodeBulkString(srv.store.Get(key))
+	return encoder.EncodeBulkString(srv.store.Get(key))
 }
 
 func (srv *RedisServer) handleInfo(args []string) (string, error) {
@@ -55,7 +57,7 @@ role:%s
 master_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb
 master_repl_offset:0
 		`, srv.Role()))
-		return encodeBulkString(resp), nil
+		return encoder.EncodeBulkString(resp), nil
 	default:
 		return "", fmt.Errorf("unknown info sub-command %s", subCmd)
 	}
