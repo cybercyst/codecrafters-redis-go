@@ -63,6 +63,10 @@ master_repl_offset:0
 	}
 }
 
+func (srv *RedisServer) handleReplConf(args []string) ([]byte, error) {
+	return encoder.EncodeSimpleString("OK"), nil
+}
+
 func (srv *RedisServer) handle(cmd string, args []string) ([]byte, error) {
 	switch Command(cmd) {
 	case Ping:
@@ -75,6 +79,8 @@ func (srv *RedisServer) handle(cmd string, args []string) ([]byte, error) {
 		return srv.handleGet(args), nil
 	case Info:
 		return srv.handleInfo(args)
+	case ReplConf:
+		return srv.handleReplConf(args)
 	default:
 		return []byte(""), fmt.Errorf("unknown command %s", cmd)
 	}
