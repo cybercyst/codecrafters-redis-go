@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/base64"
 	"fmt"
 	"io"
 	"net"
@@ -11,16 +12,24 @@ import (
 	"github.com/codecrafters-io/redis-starter-go/internal/encoder"
 )
 
-func (srv *RedisServer) handlePing() []byte {
-	return []byte("+PONG\r\n")
+var (
+	replicationID = "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb"
+	emptyRbdFile  = "UkVESVMwMDEx+glyZWRpcy12ZXIFNy4yLjD6CnJlZGlzLWJpdHPAQPoFY3RpbWXCbQi8ZfoIdXNlZC1tZW3CsMQQAPoIYW9mLWJhc2XAAP/wbjv+wP9aog=="
+)
+
+func (srv *RedisServer) handlePing(conn net.Conn) error {
+	msg := encoder.EncodeSimpleString("PONG")
+	_, err := conn.Write(msg)
+	return err
 }
 
-func (srv *RedisServer) handleEcho(args []string) []byte {
-	msg := args[0]
-	return encoder.EncodeBulkString(msg)
+func (srv *RedisServer) handleEcho(conn net.Conn, args []string) error {
+	msg := encoder.EncodeBulkString(args[0])
+	_, err := conn.Write(msg)
+	return err
 }
 
-func (srv *RedisServer) handleSet(args []string) ([]byte, error) {
+func (srv *RedisServer) handleSet(conn net.Conn, args []string) error {
 	key := args[0]
 	val := args[1]
 
@@ -34,62 +43,86 @@ func (srv *RedisServer) handleSet(args []string) ([]byte, error) {
 	case "px":
 		expiryMs, err := strconv.ParseInt(args[3], 10, 64)
 		if err != nil {
-			return []byte(""), err
+			return err
 		}
 		expiry = time.Millisecond * time.Duration(expiryMs)
 	}
 
 	srv.store.Set(key, val, expiry)
-	return encoder.EncodeSimpleString("OK"), nil
+
+	msg := encoder.EncodeSimpleString("OK")
+	_, err := conn.Write(msg)
+	return err
 }
 
-func (srv *RedisServer) handleGet(args []string) []byte {
+func (srv *RedisServer) handleGet(conn net.Conn, args []string) error {
 	key := args[0]
-	return encoder.EncodeBulkString(srv.store.Get(key))
+	msg := encoder.EncodeBulkString(srv.store.Get(key))
+	_, err := conn.Write(msg)
+	return err
 }
 
-func (srv *RedisServer) handleInfo(args []string) ([]byte, error) {
+func (srv *RedisServer) handleInfo(conn net.Conn, args []string) error {
 	subCmd := args[0]
 	switch subCmd {
 	case "replication":
 		resp := strings.TrimSpace(fmt.Sprintf(`
 role:%s
-master_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb
+master_replid:%s
 master_repl_offset:0
-		`, srv.Role()))
-		return encoder.EncodeBulkString(resp), nil
+		`, srv.Role(), replicationID))
+		msg := encoder.EncodeBulkString(resp)
+		_, err := conn.Write(msg)
+		return err
 	default:
-		return []byte{}, fmt.Errorf("unknown info sub-command %s", subCmd)
+		return fmt.Errorf("unknown info sub-command %s", subCmd)
 	}
 }
 
-func (srv *RedisServer) handleReplConf(args []string) ([]byte, error) {
-	return encoder.EncodeSimpleString("OK"), nil
+func (srv *RedisServer) handleReplConf(conn net.Conn, args []string) error {
+	msg := encoder.EncodeSimpleString("OK")
+	_, err := conn.Write(msg)
+	return err
 }
 
-func (srv *RedisServer) handlePsync(args []string) ([]byte, error) {
-	replicationID := "8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb"
-	return encoder.EncodeSimpleString(fmt.Sprintf("FULLRESYNC %s 0", replicationID)), nil
+func (srv *RedisServer) handlePsync(conn net.Conn) error {
+	rbdFile, err := base64.StdEncoding.DecodeString(emptyRbdFile)
+	if err != nil {
+		return fmt.Errorf("error decoding empty RBD file: %w", err)
+	}
+	msg := encoder.EncodeSimpleString(fmt.Sprintf("FULLRESYNC %s 0", replicationID))
+	_, err = conn.Write(msg)
+	if err != nil {
+		return fmt.Errorf("error sending FULLRESYNC: %w", err)
+	}
+
+	msg = []byte(fmt.Sprintf("$%d\r\n%s", len(rbdFile), rbdFile))
+	_, err = conn.Write(msg)
+	if err != nil {
+		return fmt.Errorf("error sending rbd file: %w", err)
+	}
+
+	return nil
 }
 
-func (srv *RedisServer) handle(cmd string, args []string) ([]byte, error) {
+func (srv *RedisServer) handle(conn net.Conn, cmd string, args []string) error {
 	switch Command(cmd) {
 	case Ping:
-		return srv.handlePing(), nil
+		return srv.handlePing(conn)
 	case Echo:
-		return srv.handleEcho(args), nil
+		return srv.handleEcho(conn, args)
 	case Set:
-		return srv.handleSet(args)
+		return srv.handleSet(conn, args)
 	case Get:
-		return srv.handleGet(args), nil
+		return srv.handleGet(conn, args)
 	case Info:
-		return srv.handleInfo(args)
+		return srv.handleInfo(conn, args)
 	case ReplConf:
-		return srv.handleReplConf(args)
+		return srv.handleReplConf(conn, args)
 	case PSync:
-		return srv.handlePsync(args)
+		return srv.handlePsync(conn)
 	default:
-		return []byte(""), fmt.Errorf("unknown command %s", cmd)
+		return fmt.Errorf("unknown command %s", cmd)
 	}
 }
 
@@ -107,11 +140,8 @@ func (srv *RedisServer) handleClientConnection(conn net.Conn) {
 			return
 		}
 
-		resp, err := srv.handle(cmd, args)
-		if err != nil {
+		if err := srv.handle(conn, cmd, args); err != nil {
 			fmt.Printf("Error handling command %s: %s\n", cmd, err.Error())
 		}
-
-		_, _ = conn.Write([]byte(resp))
 	}
 }
