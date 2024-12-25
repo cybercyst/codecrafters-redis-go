@@ -14,7 +14,8 @@ type RedisServer struct {
 	address      string
 	port         int
 	store        store.Store
-	masterClient *replica.MasterClient
+	masterClient *replica.Client
+	replicas     []*replica.Client
 }
 
 func (srv *RedisServer) Role() string {
@@ -25,12 +26,21 @@ func (srv *RedisServer) Role() string {
 	return "master"
 }
 
-func NewRedisServer(address string, port int, masterClient *replica.MasterClient) *RedisServer {
+func (srv *RedisServer) IsMaster() bool {
+	return srv.Role() == "master"
+}
+
+func (srv *RedisServer) IsSlave() bool {
+	return srv.Role() == "slave"
+}
+
+func NewRedisServer(address string, port int, masterClient *replica.Client) *RedisServer {
 	return &RedisServer{
 		address:      address,
 		port:         port,
 		masterClient: masterClient,
 		store:        *store.NewStore(),
+		replicas:     []*replica.Client{},
 	}
 }
 

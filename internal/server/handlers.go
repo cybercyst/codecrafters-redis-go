@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/codecrafters-io/redis-starter-go/internal/encoder"
+	"github.com/codecrafters-io/redis-starter-go/internal/replica"
 )
 
 var (
@@ -19,14 +20,12 @@ var (
 
 func (srv *RedisServer) handlePing(conn net.Conn) error {
 	msg := encoder.EncodeSimpleString("PONG")
-	_, err := conn.Write(msg)
-	return err
+	return srv.Write(conn, msg)
 }
 
 func (srv *RedisServer) handleEcho(conn net.Conn, args []string) error {
 	msg := encoder.EncodeBulkString(args[0])
-	_, err := conn.Write(msg)
-	return err
+	return srv.Write(conn, msg)
 }
 
 func (srv *RedisServer) handleSet(conn net.Conn, args []string) error {
@@ -50,16 +49,24 @@ func (srv *RedisServer) handleSet(conn net.Conn, args []string) error {
 
 	srv.store.Set(key, val, expiry)
 
+	if srv.IsMaster() {
+		for _, replica := range srv.replicas {
+			msg := encoder.EncodeArrayBulkString([]string{"SET", key, val})
+			err := replica.Write(msg)
+			if err != nil {
+				return fmt.Errorf("error writing to replica: %w", err)
+			}
+		}
+	}
+
 	msg := encoder.EncodeSimpleString("OK")
-	_, err := conn.Write(msg)
-	return err
+	return srv.Write(conn, msg)
 }
 
 func (srv *RedisServer) handleGet(conn net.Conn, args []string) error {
 	key := args[0]
 	msg := encoder.EncodeBulkString(srv.store.Get(key))
-	_, err := conn.Write(msg)
-	return err
+	return srv.Write(conn, msg)
 }
 
 func (srv *RedisServer) handleInfo(conn net.Conn, args []string) error {
@@ -72,17 +79,35 @@ master_replid:%s
 master_repl_offset:0
 		`, srv.Role(), replicationID))
 		msg := encoder.EncodeBulkString(resp)
-		_, err := conn.Write(msg)
-		return err
+		return srv.Write(conn, msg)
 	default:
 		return fmt.Errorf("unknown info sub-command %s", subCmd)
 	}
 }
 
 func (srv *RedisServer) handleReplConf(conn net.Conn, args []string) error {
+	subCmd := args[0]
+	switch subCmd {
+	case "listening-port":
+		portStr := args[1]
+		port, err := strconv.Atoi(portStr)
+		if err != nil {
+			return fmt.Errorf("error parsing port %s: %w", portStr, err)
+		}
+
+		replica, err := replica.NewReplicaClient(conn, port)
+		if err != nil {
+			return fmt.Errorf("error creating replica client: %w", err)
+		}
+		srv.replicas = append(srv.replicas, replica)
+	case "capa":
+		break
+	default:
+		return fmt.Errorf("unknown repl conf sub-command %s", subCmd)
+	}
+
 	msg := encoder.EncodeSimpleString("OK")
-	_, err := conn.Write(msg)
-	return err
+	return srv.Write(conn, msg)
 }
 
 func (srv *RedisServer) handlePsync(conn net.Conn) error {
@@ -90,19 +115,14 @@ func (srv *RedisServer) handlePsync(conn net.Conn) error {
 	if err != nil {
 		return fmt.Errorf("error decoding empty RBD file: %w", err)
 	}
+
 	msg := encoder.EncodeSimpleString(fmt.Sprintf("FULLRESYNC %s 0", replicationID))
-	_, err = conn.Write(msg)
-	if err != nil {
+	if err = srv.Write(conn, msg); err != nil {
 		return fmt.Errorf("error sending FULLRESYNC: %w", err)
 	}
 
 	msg = []byte(fmt.Sprintf("$%d\r\n%s", len(rbdFile), rbdFile))
-	_, err = conn.Write(msg)
-	if err != nil {
-		return fmt.Errorf("error sending rbd file: %w", err)
-	}
-
-	return nil
+	return srv.Write(conn, msg)
 }
 
 func (srv *RedisServer) handle(conn net.Conn, cmd string, args []string) error {
@@ -124,6 +144,16 @@ func (srv *RedisServer) handle(conn net.Conn, cmd string, args []string) error {
 	default:
 		return fmt.Errorf("unknown command %s", cmd)
 	}
+}
+
+func (srv *RedisServer) Write(conn net.Conn, msg []byte) error {
+	// // replicas don't respond
+	// if srv.IsSlave() {
+	// 	return nil
+	// }
+
+	_, err := conn.Write(msg)
+	return err
 }
 
 func (srv *RedisServer) handleClientConnection(conn net.Conn) {

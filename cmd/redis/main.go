@@ -30,7 +30,7 @@ func run(ctx context.Context) error {
 	replicaFlag := flag.String("replicaof", "", "the master host and master port")
 	flag.Parse()
 
-	var masterClient *replica.MasterClient
+	var masterClient *replica.Client
 	if *replicaFlag != "" {
 		masterAddress, masterPort := parseReplica(*replicaFlag)
 		m, err := replica.NewMasterClient(masterAddress, masterPort, *portFlag)

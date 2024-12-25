@@ -10,17 +10,22 @@ import (
 	"github.com/codecrafters-io/redis-starter-go/internal/encoder"
 )
 
-type MasterClient struct {
+type Client struct {
 	address string
 	port    int
 	conn    net.Conn
 }
 
-func (m *MasterClient) Close() {
+func (m *Client) Write(msg []byte) error {
+	_, err := m.conn.Write(msg)
+	return err
+}
+
+func (m *Client) Close() {
 	m.conn.Close()
 }
 
-func (m *MasterClient) SendMessageAndGetResponse(req string) (string, error) {
+func (m *Client) SendMessageAndGetResponse(req string) (string, error) {
 	encodedReq := encoder.EncodeArrayBulkString(strings.Split(req, " "))
 	_, err := (m.conn).Write(encodedReq)
 	if err != nil {
@@ -34,7 +39,7 @@ func (m *MasterClient) SendMessageAndGetResponse(req string) (string, error) {
 	return message, nil
 }
 
-func (m *MasterClient) SendMessageAndExpectResponse(req, resp string) error {
+func (m *Client) SendMessageAndExpectResponse(req, resp string) error {
 	encodedReq := encoder.EncodeArrayBulkString(strings.Split(req, " "))
 	_, err := (m.conn).Write(encodedReq)
 	if err != nil {
@@ -50,13 +55,13 @@ func (m *MasterClient) SendMessageAndExpectResponse(req, resp string) error {
 	return nil
 }
 
-func NewMasterClient(masterAddress string, masterPort, listeningPort int) (*MasterClient, error) {
+func NewMasterClient(masterAddress string, masterPort, listeningPort int) (*Client, error) {
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", masterAddress, masterPort))
 	if err != nil {
 		return nil, fmt.Errorf("error establishing connection to %s:%d: %w", masterAddress, masterPort, err)
 	}
 
-	client := &MasterClient{
+	client := &Client{
 		address: masterAddress,
 		port:    masterPort,
 		conn:    conn,
@@ -83,4 +88,11 @@ func NewMasterClient(masterAddress string, masterPort, listeningPort int) (*Mast
 	slog.Info("PSYNC response", slog.String("resp", resp))
 
 	return client, nil
+}
+
+func NewReplicaClient(conn net.Conn, listeningPort int) (*Client, error) {
+	return &Client{
+		port: listeningPort,
+		conn: conn,
+	}, nil
 }
