@@ -188,7 +188,7 @@ func (srv *RedisServer) handleConnection(conn net.Conn) {
 		}
 
 		fmt.Println(parts)
-		if parts == nil {
+		if parts == nil || len(parts) == 0 {
 			// nothing to do
 			return
 		}
