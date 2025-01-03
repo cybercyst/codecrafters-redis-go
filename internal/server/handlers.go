@@ -19,7 +19,7 @@ var (
 )
 
 func (srv *RedisServer) handlePing(conn net.Conn) error {
-	return srv.WriteSimpleString(conn, "OK")
+	return srv.WriteSimpleString(conn, "PONG")
 }
 
 func (srv *RedisServer) handleEcho(conn net.Conn, args []string) error {

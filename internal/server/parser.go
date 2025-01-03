@@ -41,7 +41,7 @@ func parseRESP(reader io.Reader) ([]string, error) {
 		}
 		return args, nil
 	default:
-		return nil, fmt.Errorf("failed to parse slice of commands")
+		return []string{string(tokens.(string))}, nil
 	}
 }
 
@@ -93,12 +93,15 @@ func parseBulkString(scanner *bufio.Scanner) (string, error) {
 		return "", fmt.Errorf("token %s is not a bulk string", token)
 	}
 
-	stringSize, err := strconv.ParseInt(token[1:], 10, 64)
+	stringSize, err := strconv.Atoi(token[1:])
 	if err != nil {
 		return "", fmt.Errorf("error parsing string size from token: %v", err)
 	}
 
-	scanner.Scan()
-	stringVal := scanner.Text()
-	return stringVal[:stringSize], nil
+	msg := ""
+	for len(msg) < stringSize {
+		scanner.Scan()
+		msg += scanner.Text()
+	}
+	return msg, nil
 }
