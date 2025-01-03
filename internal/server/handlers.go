@@ -117,12 +117,11 @@ func (srv *RedisServer) handlePsync(conn net.Conn) error {
 		return fmt.Errorf("error decoding empty RBD file: %w", err)
 	}
 
-	msg := encoder.EncodeSimpleString(fmt.Sprintf("FULLRESYNC %s 0", replicationID))
-	if err = srv.Write(conn, msg); err != nil {
+	if err = srv.WriteSimpleString(conn, fmt.Sprintf("FULLRESYNC %s 0", replicationID)); err != nil {
 		return fmt.Errorf("error sending FULLRESYNC: %w", err)
 	}
 
-	msg = []byte(fmt.Sprintf("$%d\r\n%s", len(rbdFile), rbdFile))
+	msg := []byte(fmt.Sprintf("$%d\r\n%s", len(rbdFile), rbdFile))
 	return srv.Write(conn, msg)
 }
 
