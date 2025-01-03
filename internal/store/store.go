@@ -1,6 +1,9 @@
 package store
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 type Entry struct {
 	Value  string
@@ -30,6 +33,7 @@ type DB = map[string]*Entry
 
 type Store struct {
 	db DB
+	mu sync.Mutex
 }
 
 func NewStore() *Store {
@@ -39,6 +43,9 @@ func NewStore() *Store {
 }
 
 func (store *Store) Set(key, value string, expiry time.Duration) {
+	store.mu.Lock()
+	defer store.mu.Unlock()
+
 	entry := NewEntry(value, expiry)
 	store.db[key] = &entry
 }

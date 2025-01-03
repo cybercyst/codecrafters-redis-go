@@ -16,32 +16,32 @@ const (
 	Integer    TokenType = ':'
 )
 
-func parseRequest(reader io.Reader) (string, []string, error) {
+func parseRESP(reader io.Reader) ([]string, error) {
 	scanner := bufio.NewScanner(reader)
 	scanner.Split(bufio.ScanLines)
 
 	tokens, err := parseToken(scanner)
 	if err == io.EOF {
-		return "", nil, err
+		return nil, err
 	}
 
 	if err != nil {
-		return "", nil, fmt.Errorf("error parsing request: %v", err)
+		return nil, fmt.Errorf("error parsing request: %v", err)
 	}
 
 	switch tokens.(type) {
 	case []any:
 		tokens := tokens.([]any)
 		cmd := strings.ToLower(tokens[0].(string))
-		args := []string{}
+		args := []string{cmd}
 		if len(tokens) > 1 {
 			for _, token := range tokens[1:] {
 				args = append(args, token.(string))
 			}
 		}
-		return cmd, args, nil
+		return args, nil
 	default:
-		return "", nil, fmt.Errorf("failed to parse slice of commands")
+		return nil, fmt.Errorf("failed to parse slice of commands")
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net"
+	"os"
 
 	"github.com/codecrafters-io/redis-starter-go/internal/replica"
 	"github.com/codecrafters-io/redis-starter-go/internal/store"
@@ -26,6 +27,10 @@ func (srv *RedisServer) Role() string {
 	return "master"
 }
 
+func (srv *RedisServer) IsStandalone() bool {
+	return srv.IsMaster() && srv.replicas == nil
+}
+
 func (srv *RedisServer) IsMaster() bool {
 	return srv.Role() == "master"
 }
@@ -45,29 +50,27 @@ func NewRedisServer(address string, port int, masterClient *replica.Client) *Red
 }
 
 func (srv *RedisServer) Listen(ctx context.Context) error {
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", srv.address, srv.port))
+	if err != nil {
+		slog.Error("failed to bind to port", slog.Int("port", srv.port))
+		return err
+	}
+	defer listener.Close()
+	slog.Info("Redis started", slog.Int("port", srv.port))
 
 	go func() {
-		listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", srv.address, srv.port))
-		if err != nil {
-			slog.Error("failed to bind to port", slog.Int("port", srv.port))
-			cancel()
-		}
-		defer listener.Close()
-		slog.Info("Redis started", slog.Int("port", srv.port))
-
-		for {
-			conn, err := listener.Accept()
-			if err != nil {
-				slog.Error("failed to receive data", slog.Any("error", err))
-				cancel()
-			}
-			go srv.handleClientConnection(conn)
-		}
+		<-ctx.Done()
+		fmt.Println("\nShutting down server...")
+		listener.Close()
+		os.Exit(0)
 	}()
 
-	<-ctx.Done()
-
-	return nil
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			slog.Error("failed to receive data", slog.Any("error", err))
+			return err
+		}
+		go srv.handleConnection(conn)
+	}
 }

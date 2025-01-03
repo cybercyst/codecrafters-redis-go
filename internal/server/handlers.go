@@ -19,13 +19,14 @@ var (
 )
 
 func (srv *RedisServer) handlePing(conn net.Conn) error {
-	msg := encoder.EncodeSimpleString("PONG")
-	return srv.Write(conn, msg)
+	return srv.WriteSimpleString(conn, "OK")
 }
 
 func (srv *RedisServer) handleEcho(conn net.Conn, args []string) error {
-	msg := encoder.EncodeBulkString(args[0])
-	return srv.Write(conn, msg)
+	if len(args) > 1 {
+		return fmt.Errorf("wrong number of arguments for 'echo' command")
+	}
+	return srv.WriteBulkString(conn, args[0])
 }
 
 func (srv *RedisServer) handleSet(conn net.Conn, args []string) error {
@@ -59,14 +60,16 @@ func (srv *RedisServer) handleSet(conn net.Conn, args []string) error {
 		}
 	}
 
-	msg := encoder.EncodeSimpleString("OK")
-	return srv.Write(conn, msg)
+	if srv.IsSlave() {
+		return nil
+	}
+
+	return srv.WriteSimpleString(conn, "OK")
 }
 
 func (srv *RedisServer) handleGet(conn net.Conn, args []string) error {
 	key := args[0]
-	msg := encoder.EncodeBulkString(srv.store.Get(key))
-	return srv.Write(conn, msg)
+	return srv.WriteBulkString(conn, srv.store.Get(key))
 }
 
 func (srv *RedisServer) handleInfo(conn net.Conn, args []string) error {
@@ -78,8 +81,7 @@ role:%s
 master_replid:%s
 master_repl_offset:0
 		`, srv.Role(), replicationID))
-		msg := encoder.EncodeBulkString(resp)
-		return srv.Write(conn, msg)
+		return srv.WriteBulkString(conn, resp)
 	default:
 		return fmt.Errorf("unknown info sub-command %s", subCmd)
 	}
@@ -106,8 +108,7 @@ func (srv *RedisServer) handleReplConf(conn net.Conn, args []string) error {
 		return fmt.Errorf("unknown repl conf sub-command %s", subCmd)
 	}
 
-	msg := encoder.EncodeSimpleString("OK")
-	return srv.Write(conn, msg)
+	return srv.WriteSimpleString(conn, "OK")
 }
 
 func (srv *RedisServer) handlePsync(conn net.Conn) error {
@@ -125,7 +126,9 @@ func (srv *RedisServer) handlePsync(conn net.Conn) error {
 	return srv.Write(conn, msg)
 }
 
-func (srv *RedisServer) handle(conn net.Conn, cmd string, args []string) error {
+func (srv *RedisServer) handle(conn net.Conn, parts []string) error {
+	cmd := parts[0]
+	args := parts[1:]
 	switch Command(cmd) {
 	case Ping:
 		return srv.handlePing(conn)
@@ -142,36 +145,47 @@ func (srv *RedisServer) handle(conn net.Conn, cmd string, args []string) error {
 	case PSync:
 		return srv.handlePsync(conn)
 	default:
-		return fmt.Errorf("unknown command %s", cmd)
+		return fmt.Errorf("unknown cmd %s", cmd)
 	}
 }
 
-func (srv *RedisServer) Write(conn net.Conn, msg []byte) error {
-	// // replicas don't respond
-	// if srv.IsSlave() {
-	// 	return nil
-	// }
+func (srv *RedisServer) WriteSimpleString(conn net.Conn, msg string) error {
+	encodingMsg := encoder.EncodeSimpleString(msg)
+	if err := srv.Write(conn, encodingMsg); err != nil {
+		return err
+	}
+	return nil
+}
 
+func (srv *RedisServer) WriteBulkString(conn net.Conn, msg string) error {
+	encodingMsg := encoder.EncodeBulkString(msg)
+	if err := srv.Write(conn, encodingMsg); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (srv *RedisServer) Write(conn net.Conn, msg []byte) error {
 	_, err := conn.Write(msg)
 	return err
 }
 
-func (srv *RedisServer) handleClientConnection(conn net.Conn) {
+func (srv *RedisServer) handleConnection(conn net.Conn) {
 	defer conn.Close()
 
-	for {
-		cmd, args, err := parseRequest(conn)
-		if err == io.EOF {
-			break
-		}
+	fmt.Printf("New connection from %s\n", conn.RemoteAddr().String())
 
+	for {
+		parts, err := parseRESP(conn)
 		if err != nil {
-			fmt.Printf("Error reading from client: %s\n", err.Error())
+			if err != io.EOF {
+				fmt.Printf("Error reading from client: %s\n", err.Error())
+			}
 			return
 		}
 
-		if err := srv.handle(conn, cmd, args); err != nil {
-			fmt.Printf("Error handling command %s: %s\n", cmd, err.Error())
+		if err := srv.handle(conn, parts); err != nil {
+			fmt.Printf("Error handling command %s: %s\n", parts, err.Error())
 		}
 	}
 }
