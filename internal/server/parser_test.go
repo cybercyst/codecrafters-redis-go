@@ -14,7 +14,7 @@ func TestParseRequest(t *testing.T) {
 		t.Fatalf("got unexpected err %v", err)
 	}
 
-	if slices.Equal(gotArgs, wantArgs) {
+	if !slices.Equal(gotArgs, wantArgs) {
 		t.Fatalf("got %v, wanted %v", gotArgs, wantArgs)
 	}
 }

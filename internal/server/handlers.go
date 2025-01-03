@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bufio"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -174,12 +175,21 @@ func (srv *RedisServer) handleConnection(conn net.Conn) {
 
 	fmt.Printf("New connection from %s\n", conn.RemoteAddr().String())
 
+	scanner := bufio.NewScanner(conn)
+	scanner.Split(bufio.ScanLines)
+
 	for {
-		parts, err := parseRESP(conn)
+		parts, err := parseRESP(scanner)
 		if err != nil {
 			if err != io.EOF {
 				fmt.Printf("Error reading from client: %s\n", err.Error())
 			}
+			return
+		}
+
+		fmt.Println(parts)
+		if parts == nil {
+			// nothing to do
 			return
 		}
 

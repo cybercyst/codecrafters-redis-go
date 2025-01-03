@@ -16,10 +16,7 @@ const (
 	Integer    TokenType = ':'
 )
 
-func parseRESP(reader io.Reader) ([]string, error) {
-	scanner := bufio.NewScanner(reader)
-	scanner.Split(bufio.ScanLines)
-
+func parseRESP(scanner *bufio.Scanner) ([]string, error) {
 	tokens, err := parseToken(scanner)
 	if err == io.EOF {
 		return nil, err
@@ -41,7 +38,7 @@ func parseRESP(reader io.Reader) ([]string, error) {
 		}
 		return args, nil
 	default:
-		return []string{string(tokens.(string))}, nil
+		return nil, nil
 	}
 }
 
@@ -55,6 +52,7 @@ func parseToken(scanner *bufio.Scanner) (any, error) {
 	if token == "" {
 		return nil, fmt.Errorf("no token parsed")
 	}
+	// fmt.Println("token: ", token)
 
 	switch TokenType(token[0]) {
 	case Array:
@@ -70,14 +68,15 @@ func parseArray(scanner *bufio.Scanner) ([]any, error) {
 	if TokenType(token[0]) != Array {
 		return nil, fmt.Errorf("token %s not an array", token)
 	}
+	fmt.Println("token: ", token)
 
-	arraySize, err := strconv.ParseInt(token[1:], 10, 64)
+	arraySize, err := strconv.Atoi(token[1:])
 	if err != nil {
 		return nil, fmt.Errorf("error parsing array size from token: %v", err)
 	}
 
 	arr := make([]any, arraySize)
-	for i := int64(0); i < arraySize; i++ {
+	for i := 0; i < arraySize; i++ {
 		arr[i], err = parseToken(scanner)
 		if err != nil {
 			return nil, err
@@ -92,6 +91,7 @@ func parseBulkString(scanner *bufio.Scanner) (string, error) {
 	if TokenType(token[0]) != BulkString {
 		return "", fmt.Errorf("token %s is not a bulk string", token)
 	}
+	fmt.Println("token: ", token)
 
 	stringSize, err := strconv.Atoi(token[1:])
 	if err != nil {
@@ -101,7 +101,9 @@ func parseBulkString(scanner *bufio.Scanner) (string, error) {
 	msg := ""
 	for len(msg) < stringSize {
 		scanner.Scan()
-		msg += scanner.Text()
+		token = scanner.Text()
+		msg += token
+		fmt.Println("token: ", token)
 	}
 	return msg, nil
 }
