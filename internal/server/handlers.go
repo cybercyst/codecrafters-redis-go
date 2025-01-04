@@ -89,7 +89,7 @@ master_repl_offset:0
 }
 
 func (srv *RedisServer) handleReplConf(conn net.Conn, args []string) error {
-	subCmd := args[0]
+	subCmd := strings.ToLower(args[0])
 	switch subCmd {
 	case "listening-port":
 		portStr := args[1]
@@ -103,6 +103,8 @@ func (srv *RedisServer) handleReplConf(conn net.Conn, args []string) error {
 			return fmt.Errorf("error creating replica client: %w", err)
 		}
 		srv.replicas = append(srv.replicas, replica)
+	case "getack":
+		return srv.WriteArray(conn, []string{"REPLCONF", "ACK", "0"})
 	case "capa":
 		break
 	default:
@@ -149,20 +151,20 @@ func (srv *RedisServer) handle(conn net.Conn, parts []string) error {
 	}
 }
 
+func (srv *RedisServer) WriteArray(conn net.Conn, msg []string) error {
+	encodedMsg := encoder.EncodeArrayBulkString(msg)
+	fmt.Println("sending", string(encodedMsg))
+	return srv.Write(conn, encodedMsg)
+}
+
 func (srv *RedisServer) WriteSimpleString(conn net.Conn, msg string) error {
-	encodingMsg := encoder.EncodeSimpleString(msg)
-	if err := srv.Write(conn, encodingMsg); err != nil {
-		return err
-	}
-	return nil
+	encodedMsg := encoder.EncodeSimpleString(msg)
+	return srv.Write(conn, encodedMsg)
 }
 
 func (srv *RedisServer) WriteBulkString(conn net.Conn, msg string) error {
-	encodingMsg := encoder.EncodeBulkString(msg)
-	if err := srv.Write(conn, encodingMsg); err != nil {
-		return err
-	}
-	return nil
+	encodedMsg := encoder.EncodeBulkString(msg)
+	return srv.Write(conn, encodedMsg)
 }
 
 func (srv *RedisServer) Write(conn net.Conn, msg []byte) error {
@@ -188,7 +190,7 @@ func (srv *RedisServer) handleConnection(conn net.Conn) {
 		}
 
 		fmt.Println(parts)
-		if parts == nil || len(parts) == 0 {
+		if len(parts) == 0 {
 			// nothing to do
 			return
 		}
