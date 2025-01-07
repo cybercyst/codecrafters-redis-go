@@ -7,8 +7,6 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
-	"strconv"
-	"strings"
 	"syscall"
 
 	"github.com/codecrafters-io/redis-starter-go/internal/replica"
@@ -32,8 +30,7 @@ func run(ctx context.Context) error {
 
 	var masterClient *replica.Client
 	if *replicaFlag != "" {
-		masterAddress, masterPort := parseReplica(*replicaFlag)
-		m, err := replica.NewMasterClient(masterAddress, masterPort, *portFlag)
+		m, err := replica.NewMasterClient(ctx, *replicaFlag, *portFlag)
 		if err != nil {
 			return fmt.Errorf("error connecting to master: %w", err)
 		}
@@ -48,26 +45,4 @@ func run(ctx context.Context) error {
 	}
 
 	return nil
-}
-
-func parseReplica(replicaFlag string) (string, int) {
-	if replicaFlag == "" {
-		return "", 0
-	}
-
-	chunks := strings.SplitN(replicaFlag, " ", 2)
-
-	address := chunks[0]
-	portStr := chunks[1]
-
-	if address == "" || portStr == "" {
-		return "", 0
-	}
-
-	port, err := strconv.Atoi(portStr)
-	if err != nil {
-		return "", 0
-	}
-
-	return address, port
 }

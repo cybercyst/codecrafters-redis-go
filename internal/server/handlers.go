@@ -189,7 +189,7 @@ func (srv *RedisServer) handleConnection(conn net.Conn) {
 			return
 		}
 
-		fmt.Println(parts)
+		// fmt.Println(parts)
 		if len(parts) == 0 {
 			// nothing to do
 			return

@@ -68,7 +68,7 @@ func parseArray(scanner *bufio.Scanner) ([]any, error) {
 	if TokenType(token[0]) != Array {
 		return nil, fmt.Errorf("token %s not an array", token)
 	}
-	fmt.Println("token: ", token)
+	// fmt.Println("token: ", token)
 
 	arraySize, err := strconv.Atoi(token[1:])
 	if err != nil {
@@ -91,7 +91,7 @@ func parseBulkString(scanner *bufio.Scanner) (string, error) {
 	if TokenType(token[0]) != BulkString {
 		return "", fmt.Errorf("token %s is not a bulk string", token)
 	}
-	fmt.Println("token: ", token)
+	// fmt.Println("token: ", token)
 
 	stringSize, err := strconv.Atoi(token[1:])
 	if err != nil {
@@ -103,7 +103,7 @@ func parseBulkString(scanner *bufio.Scanner) (string, error) {
 		scanner.Scan()
 		token = scanner.Text()
 		msg += token
-		fmt.Println("token: ", token)
+		// fmt.Println("token: ", token)
 	}
 	return msg, nil
 }

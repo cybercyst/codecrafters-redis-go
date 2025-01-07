@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net"
-	"os"
 
 	"github.com/codecrafters-io/redis-starter-go/internal/replica"
 	"github.com/codecrafters-io/redis-starter-go/internal/store"
@@ -60,9 +59,8 @@ func (srv *RedisServer) Listen(ctx context.Context) error {
 
 	go func() {
 		<-ctx.Done()
-		fmt.Println("\nShutting down server...")
+		fmt.Println("Shutting down server...")
 		listener.Close()
-		os.Exit(0)
 	}()
 
 	if srv.IsSlave() {
@@ -75,6 +73,12 @@ func (srv *RedisServer) Listen(ctx context.Context) error {
 			slog.Error("failed to receive data", slog.Any("error", err))
 			return err
 		}
+
+		go func() {
+			<-ctx.Done()
+			conn.Close()
+		}()
+
 		go srv.handleConnection(conn)
 	}
 }

@@ -1,0 +1,705 @@
+Initiating test run...
+
+[32m⚡ This is a turbo test run. https://codecrafters.io/turbo[0m
+
+Running tests. Logs should appear shortly...
+
+[33m[compile][0m [32mCompilation successful.[0m
+
+Debug = true
+
+[33m[tester::#JM1] [0m[94mRunning tests for Stage #JM1 (Bind to a port)[0m
+[33m[tester::#JM1] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[tester::#JM1] [0m[94mConnecting to port 6379...[0m
+[33m[your_program] [0m2025/01/07 03:01:19 INFO Redis started port=6379
+[33m[tester::#JM1] [0m[36mConnection successful[0m
+[33m[tester::#JM1] [0m[92mTest passed.[0m
+[33m[tester::#JM1] [0m[36mTerminating program[0m
+[33m[your_program] [0mNew connection from [::1]:35396
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:20 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:20 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#JM1] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#RG2] [0m[94mRunning tests for Stage #RG2 (Respond to PING)[0m
+[33m[tester::#RG2] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[your_program] [0m2025/01/07 03:01:20 INFO Redis started port=6379
+[33m[tester::#RG2] [0m[36mConnection established, sending ping command...[0m
+[33m[tester::#RG2] [0m[94m$ redis-cli PING[0m
+[33m[tester::#RG2] [0m[36mSent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#RG2] [0m[36mReceived bytes: "+PONG\r\n"[0m
+[33m[tester::#RG2] [0m[36mReceived RESP simple string: "PONG"[0m
+[33m[your_program] [0mNew connection from [::1]:35448
+[33m[tester::#RG2] [0m[92mReceived "PONG"[0m
+[33m[tester::#RG2] [0m[92mTest passed.[0m
+[33m[tester::#RG2] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:20 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:20 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#RG2] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#WY1] [0m[94mRunning tests for Stage #WY1 (Respond to multiple PINGs)[0m
+[33m[tester::#WY1] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[your_program] [0m2025/01/07 03:01:21 INFO Redis started port=6379
+[33m[tester::#WY1] [0m[94mclient-1: $ redis-cli PING[0m
+[33m[tester::#WY1] [0m[36mclient-1: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35480
+[33m[tester::#WY1] [0m[36mclient-1: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#WY1] [0m[36mclient-1: Received RESP simple string: "PONG"[0m
+[33m[tester::#WY1] [0m[92mReceived "PONG"[0m
+[33m[tester::#WY1] [0m[94mclient-1: > PING[0m
+[33m[tester::#WY1] [0m[36mclient-1: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#WY1] [0m[36mclient-1: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#WY1] [0m[36mclient-1: Received RESP simple string: "PONG"[0m
+[33m[tester::#WY1] [0m[92mReceived "PONG"[0m
+[33m[tester::#WY1] [0m[94mclient-1: > PING[0m
+[33m[tester::#WY1] [0m[36mclient-1: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#WY1] [0m[36mclient-1: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#WY1] [0m[36mclient-1: Received RESP simple string: "PONG"[0m
+[33m[tester::#WY1] [0m[92mReceived "PONG"[0m
+[33m[tester::#WY1] [0m[36mSuccess, closing connection...[0m
+[33m[tester::#WY1] [0m[92mTest passed.[0m
+[33m[tester::#WY1] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:21 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:21 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#WY1] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#ZU2] [0m[94mRunning tests for Stage #ZU2 (Handle concurrent clients)[0m
+[33m[tester::#ZU2] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[your_program] [0m2025/01/07 03:01:21 INFO Redis started port=6379
+[33m[tester::#ZU2] [0m[94mclient-1: $ redis-cli PING[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Received RESP simple string: "PONG"[0m
+[33m[your_program] [0mNew connection from [::1]:35518
+[33m[tester::#ZU2] [0m[92mReceived "PONG"[0m
+[33m[tester::#ZU2] [0m[94mclient-2: $ redis-cli PING[0m
+[33m[tester::#ZU2] [0m[36mclient-2: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-2: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-2: Received RESP simple string: "PONG"[0m
+[33m[your_program] [0mNew connection from [::1]:35530
+[33m[tester::#ZU2] [0m[92mReceived "PONG"[0m
+[33m[tester::#ZU2] [0m[94mclient-1: > PING[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Received RESP simple string: "PONG"[0m
+[33m[tester::#ZU2] [0m[92mReceived "PONG"[0m
+[33m[tester::#ZU2] [0m[94mclient-1: > PING[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Received RESP simple string: "PONG"[0m
+[33m[tester::#ZU2] [0m[92mReceived "PONG"[0m
+[33m[tester::#ZU2] [0m[94mclient-2: > PING[0m
+[33m[tester::#ZU2] [0m[36mclient-2: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-2: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-2: Received RESP simple string: "PONG"[0m
+[33m[tester::#ZU2] [0m[92mReceived "PONG"[0m
+[33m[tester::#ZU2] [0m[36mclient-1: Success, closing connection...[0m
+[33m[tester::#ZU2] [0m[94mclient-3: $ redis-cli PING[0m
+[33m[tester::#ZU2] [0m[36mclient-3: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-3: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#ZU2] [0m[36mclient-3: Received RESP simple string: "PONG"[0m
+[33m[your_program] [0mNew connection from [::1]:35540
+[33m[tester::#ZU2] [0m[92mReceived "PONG"[0m
+[33m[tester::#ZU2] [0m[36mclient-2: Success, closing connection...[0m
+[33m[tester::#ZU2] [0m[36mclient-3: Success, closing connection...[0m
+[33m[tester::#ZU2] [0m[92mTest passed.[0m
+[33m[tester::#ZU2] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:21 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:21 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#ZU2] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#QQ0] [0m[94mRunning tests for Stage #QQ0 (Implement the ECHO command)[0m
+[33m[tester::#QQ0] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[your_program] [0m2025/01/07 03:01:21 INFO Redis started port=6379
+[33m[tester::#QQ0] [0m[94m$ redis-cli ECHO raspberry[0m
+[33m[tester::#QQ0] [0m[36mSent bytes: "*2\r\n$4\r\nECHO\r\n$9\r\nraspberry\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35578
+[33m[tester::#QQ0] [0m[36mReceived bytes: "$9\r\nraspberry\r\n"[0m
+[33m[tester::#QQ0] [0m[36mReceived RESP bulk string: "raspberry"[0m
+[33m[tester::#QQ0] [0m[92mReceived "raspberry"[0m
+[33m[tester::#QQ0] [0m[92mTest passed.[0m
+[33m[tester::#QQ0] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:21 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:21 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#QQ0] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#LA7] [0m[94mRunning tests for Stage #LA7 (Implement the SET & GET commands)[0m
+[33m[tester::#LA7] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[your_program] [0m2025/01/07 03:01:22 INFO Redis started port=6379
+[33m[tester::#LA7] [0m[36mSetting key apple to pear[0m
+[33m[tester::#LA7] [0m[94m$ redis-cli SET apple pear[0m
+[33m[tester::#LA7] [0m[36mSent bytes: "*3\r\n$3\r\nSET\r\n$5\r\napple\r\n$4\r\npear\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35602
+[33m[tester::#LA7] [0m[36mReceived bytes: "+OK\r\n"[0m
+[33m[tester::#LA7] [0m[36mReceived RESP simple string: "OK"[0m
+[33m[tester::#LA7] [0m[92mReceived "OK"[0m
+[33m[tester::#LA7] [0m[36mGetting key apple[0m
+[33m[tester::#LA7] [0m[94m> GET apple[0m
+[33m[tester::#LA7] [0m[36mSent bytes: "*2\r\n$3\r\nGET\r\n$5\r\napple\r\n"[0m
+[33m[tester::#LA7] [0m[36mReceived bytes: "$4\r\npear\r\n"[0m
+[33m[tester::#LA7] [0m[36mReceived RESP bulk string: "pear"[0m
+[33m[tester::#LA7] [0m[92mReceived "pear"[0m
+[33m[tester::#LA7] [0m[92mTest passed.[0m
+[33m[tester::#LA7] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:22 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:22 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#LA7] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#YZ1] [0m[94mRunning tests for Stage #YZ1 (Expiry)[0m
+[33m[tester::#YZ1] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[your_program] [0m2025/01/07 03:01:22 INFO Redis started port=6379
+[33m[tester::#YZ1] [0m[94m$ redis-cli SET grape pineapple px 100[0m
+[33m[tester::#YZ1] [0m[36mSent bytes: "*5\r\n$3\r\nSET\r\n$5\r\ngrape\r\n$9\r\npineapple\r\n$2\r\npx\r\n$3\r\n100\r\n"[0m
+[33m[tester::#YZ1] [0m[36mReceived bytes: "+OK\r\n"[0m
+[33m[tester::#YZ1] [0m[36mReceived RESP simple string: "OK"[0m
+[33m[your_program] [0mNew connection from [::1]:35640
+[33m[tester::#YZ1] [0m[92mReceived "OK"[0m
+[33m[tester::#YZ1] [0m[92mReceived OK at 03:01:22.528[0m
+[33m[tester::#YZ1] [0m[94mFetching key "grape" at 03:01:22.529 (should not be expired)[0m
+[33m[tester::#YZ1] [0m[94m> GET grape[0m
+[33m[tester::#YZ1] [0m[36mSent bytes: "*2\r\n$3\r\nGET\r\n$5\r\ngrape\r\n"[0m
+[33m[tester::#YZ1] [0m[36mReceived bytes: "$9\r\npineapple\r\n"[0m
+[33m[tester::#YZ1] [0m[36mReceived RESP bulk string: "pineapple"[0m
+[33m[tester::#YZ1] [0m[92mReceived "pineapple"[0m
+[33m[tester::#YZ1] [0m[36mSleeping for 101ms[0m
+[33m[tester::#YZ1] [0m[94mFetching key "grape" at 03:01:22.632 (should be expired)[0m
+[33m[tester::#YZ1] [0m[94m> GET grape[0m
+[33m[tester::#YZ1] [0m[36mSent bytes: "*2\r\n$3\r\nGET\r\n$5\r\ngrape\r\n"[0m
+[33m[tester::#YZ1] [0m[36mReceived bytes: "$-1\r\n"[0m
+[33m[tester::#YZ1] [0m[36mReceived RESP null bulk string: "$-1\r\n"[0m
+[33m[tester::#YZ1] [0m[92mReceived "$-1\r\n"[0m
+[33m[tester::#YZ1] [0m[92mTest passed.[0m
+[33m[tester::#YZ1] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:22 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:22 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#YZ1] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#BW1] [0m[94mRunning tests for Stage #BW1 (Replication - Configure listening port)[0m
+[33m[tester::#BW1] [0m[94m$ ./spawn_redis_server.sh --port 6388[0m
+[33m[tester::#BW1] [0m[94mConnecting to port 6388...[0m
+[33m[your_program] [0m2025/01/07 03:01:22 INFO Redis started port=6388
+[33m[tester::#BW1] [0m[36mConnection successful[0m
+[33m[tester::#BW1] [0m[92mTest passed.[0m
+[33m[tester::#BW1] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0mNew connection from [::1]:42160
+[33m[your_program] [0m2025/01/07 03:01:23 ERROR failed to receive data error="accept tcp [::]:6388: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:23 ERROR error running redis error="error starting server: accept tcp [::]:6388: use of closed network connection"
+[33m[tester::#BW1] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#YE5] [0m[94mRunning tests for Stage #YE5 (Replication - The INFO command)[0m
+[33m[tester::#YE5] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[your_program] [0m2025/01/07 03:01:23 INFO Redis started port=6379
+[33m[tester::#YE5] [0m[94mclient: $ redis-cli INFO replication[0m
+[33m[tester::#YE5] [0m[36mclient: Sent bytes: "*2\r\n$4\r\nINFO\r\n$11\r\nreplication\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35662
+[33m[tester::#YE5] [0m[36mclient: Received bytes: "$87\r\nrole:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n"[0m
+[33m[tester::#YE5] [0m[36mclient: Received RESP bulk string: "role:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0"[0m
+[33m[tester::#YE5] [0m[92mReceived "role:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0"[0m
+[33m[tester::#YE5] [0m[92mFound role:master in response.[0m
+[33m[tester::#YE5] [0m[92mTest passed.[0m
+[33m[tester::#YE5] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:23 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:23 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#YE5] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#HC6] [0m[94mRunning tests for Stage #HC6 (Replication - The INFO command on a replica)[0m
+[33m[tester::#HC6] [0m[94mMaster is running on port 6379[0m
+[33m[tester::#HC6] [0m[94m$ ./spawn_redis_server.sh --port 6380 --replicaof "localhost 6379"[0m
+[33m[your_program] [0mNew connection from [::1]:6379
+[33m[your_program] [0m2025/01/07 03:01:24 INFO PSYNC response resp="+FULLRESYNC 75cd7bc10c49047e0d163660f3b90625b1af31dc 0\r\n"
+[33m[your_program] [0m2025/01/07 03:01:24 INFO Redis started port=6380
+[33m[tester::#HC6] [0m[94mclient: $ redis-cli INFO replication[0m
+[33m[tester::#HC6] [0m[36mclient: Sent bytes: "*2\r\n$4\r\nINFO\r\n$11\r\nreplication\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:48620
+[33m[tester::#HC6] [0m[36mclient: Received bytes: "$86\r\nrole:slave\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n"[0m
+[33m[tester::#HC6] [0m[36mclient: Received RESP bulk string: "role:slave\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0"[0m
+[33m[tester::#HC6] [0m[92mReceived "role:slave\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0"[0m
+[33m[tester::#HC6] [0m[92mFound role:slave in response.[0m
+[33m[tester::#HC6] [0m[92mTest passed.[0m
+[33m[tester::#HC6] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down master connection...
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:24 ERROR failed to receive data error="accept tcp [::]:6380: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:24 ERROR error running redis error="error starting server: accept tcp [::]:6380: use of closed network connection"
+[33m[tester::#HC6] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#XC1] [0m[94mRunning tests for Stage #XC1 (Replication - Initial Replication ID and Offset)[0m
+[33m[tester::#XC1] [0m[94m$ ./spawn_redis_server.sh[0m
+[33m[your_program] [0m2025/01/07 03:01:24 INFO Redis started port=6379
+[33m[tester::#XC1] [0m[94mclient: $ redis-cli INFO replication[0m
+[33m[tester::#XC1] [0m[36mclient: Sent bytes: "*2\r\n$4\r\nINFO\r\n$11\r\nreplication\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35692
+[33m[tester::#XC1] [0m[36mclient: Received bytes: "$87\r\nrole:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0\r\n"[0m
+[33m[tester::#XC1] [0m[36mclient: Received RESP bulk string: "role:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0"[0m
+[33m[tester::#XC1] [0m[92mReceived "role:master\nmaster_replid:8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb\nmaster_repl_offset:0"[0m
+[33m[tester::#XC1] [0m[92mFound master_replid:xxx in response.[0m
+[33m[tester::#XC1] [0m[92mFound master_reploffset:0 in response.[0m
+[33m[tester::#XC1] [0m[92mTest passed.[0m
+[33m[tester::#XC1] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:24 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:24 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#XC1] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#GL7] [0m[94mRunning tests for Stage #GL7 (Replication - Send handshake (1/3))[0m
+[33m[tester::#GL7] [0m[94mMaster is running on port 6379.[0m
+[33m[tester::#GL7] [0m[94m$ ./spawn_redis_server.sh --port 6380 --replicaof "localhost 6379"[0m
+[33m[tester::#GL7] [0m[94mmaster: Waiting for replica to initiate handshake with "PING" command[0m
+[33m[tester::#GL7] [0m[36mmaster: Received bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#GL7] [0m[36mmaster: Received RESP array: ["PING"][0m
+[33m[tester::#GL7] [0m[92mReceived ["PING"][0m
+[33m[tester::#GL7] [0m[94mmaster: Sent "PONG"[0m
+[33m[tester::#GL7] [0m[36mmaster: Sent bytes: "+PONG\r\n"[0m
+[33m[tester::#GL7] [0m[92mTest passed.[0m
+[33m[tester::#GL7] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down master connection...
+[33m[your_program] [0m2025/01/07 03:01:24 ERROR error running redis error="error connecting to master: error sending REPLCONF listening-port 6380: expected response OK, got "
+[33m[tester::#GL7] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#EH4] [0m[94mRunning tests for Stage #EH4 (Replication - Send handshake (2/3))[0m
+[33m[tester::#EH4] [0m[94mMaster is running on port 6379[0m
+[33m[tester::#EH4] [0m[94m$ ./spawn_redis_server.sh --port 6380 --replicaof "localhost 6379"[0m
+[33m[tester::#EH4] [0m[94mmaster: Waiting for replica to initiate handshake with "PING" command[0m
+[33m[tester::#EH4] [0m[36mmaster: Received bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#EH4] [0m[36mmaster: Received RESP array: ["PING"][0m
+[33m[tester::#EH4] [0m[92mReceived ["PING"][0m
+[33m[tester::#EH4] [0m[94mmaster: Sent "PONG"[0m
+[33m[tester::#EH4] [0m[36mmaster: Sent bytes: "+PONG\r\n"[0m
+[33m[tester::#EH4] [0m[94mmaster: Waiting for replica to send "REPLCONF listening-port 6380" command[0m
+[33m[tester::#EH4] [0m[36mmaster: Received bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n"[0m
+[33m[tester::#EH4] [0m[36mmaster: Received RESP array: ["REPLCONF", "listening-port", "6380"][0m
+[33m[tester::#EH4] [0m[92mReceived ["REPLCONF", "listening-port", "6380"][0m
+[33m[tester::#EH4] [0m[94mmaster: Sent "OK"[0m
+[33m[tester::#EH4] [0m[36mmaster: Sent bytes: "+OK\r\n"[0m
+[33m[tester::#EH4] [0m[94mmaster: Waiting for replica to send "REPLCONF capa" command[0m
+[33m[tester::#EH4] [0m[36mmaster: Received bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#EH4] [0m[36mmaster: Received RESP array: ["REPLCONF", "capa", "psync2"][0m
+[33m[tester::#EH4] [0m[92mReceived ["REPLCONF", "capa", "psync2"][0m
+[33m[tester::#EH4] [0m[94mmaster: Sent "OK"[0m
+[33m[tester::#EH4] [0m[36mmaster: Sent bytes: "+OK\r\n"[0m
+[33m[tester::#EH4] [0m[92mTest passed.[0m
+[33m[tester::#EH4] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down master connection...
+[33m[your_program] [0m2025/01/07 03:01:25 ERROR error running redis error="error connecting to master: error sending PSYNC: error getting reply: EOF"
+[33m[tester::#EH4] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#JU6] [0m[94mRunning tests for Stage #JU6 (Replication - Send handshake (3/3))[0m
+[33m[tester::#JU6] [0m[94mMaster is running on port 6379[0m
+[33m[tester::#JU6] [0m[94m$ ./spawn_redis_server.sh --port 6380 --replicaof "localhost 6379"[0m
+[33m[tester::#JU6] [0m[94mmaster: Waiting for replica to initiate handshake with "PING" command[0m
+[33m[tester::#JU6] [0m[36mmaster: Received bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#JU6] [0m[36mmaster: Received RESP array: ["PING"][0m
+[33m[tester::#JU6] [0m[92mReceived ["PING"][0m
+[33m[tester::#JU6] [0m[94mmaster: Sent "PONG"[0m
+[33m[tester::#JU6] [0m[36mmaster: Sent bytes: "+PONG\r\n"[0m
+[33m[tester::#JU6] [0m[94mmaster: Waiting for replica to send "REPLCONF listening-port 6380" command[0m
+[33m[tester::#JU6] [0m[36mmaster: Received bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n"[0m
+[33m[tester::#JU6] [0m[36mmaster: Received RESP array: ["REPLCONF", "listening-port", "6380"][0m
+[33m[tester::#JU6] [0m[92mReceived ["REPLCONF", "listening-port", "6380"][0m
+[33m[tester::#JU6] [0m[94mmaster: Sent "OK"[0m
+[33m[tester::#JU6] [0m[36mmaster: Sent bytes: "+OK\r\n"[0m
+[33m[tester::#JU6] [0m[94mmaster: Waiting for replica to send "REPLCONF capa" command[0m
+[33m[tester::#JU6] [0m[36mmaster: Received bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#JU6] [0m[36mmaster: Received RESP array: ["REPLCONF", "capa", "psync2"][0m
+[33m[tester::#JU6] [0m[92mReceived ["REPLCONF", "capa", "psync2"][0m
+[33m[tester::#JU6] [0m[94mmaster: Sent "OK"[0m
+[33m[tester::#JU6] [0m[36mmaster: Sent bytes: "+OK\r\n"[0m
+[33m[tester::#JU6] [0m[94mmaster: Waiting for replica to send "PSYNC" command[0m
+[33m[tester::#JU6] [0m[36mmaster: Received bytes: "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n"[0m
+[33m[tester::#JU6] [0m[36mmaster: Received RESP array: ["PSYNC", "?", "-1"][0m
+[33m[tester::#JU6] [0m[92mReceived ["PSYNC", "?", "-1"][0m
+[33m[tester::#JU6] [0m[94mmaster: Sent "FULLRESYNC 75cd7bc10c49047e0d163660f3b90625b1af31dc 0"[0m
+[33m[tester::#JU6] [0m[36mmaster: Sent bytes: "+FULLRESYNC 75cd7bc10c49047e0d163660f3b90625b1af31dc 0\r\n"[0m
+[33m[tester::#JU6] [0m[92mTest passed.[0m
+[33m[tester::#JU6] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down master connection...
+[33m[your_program] [0mNew connection from [::1]:6379
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:25 INFO PSYNC response resp="+FULLRESYNC 75cd7bc10c49047e0d163660f3b90625b1af31dc 0\r\n"
+[33m[your_program] [0m2025/01/07 03:01:25 INFO Redis started port=6380
+[33m[your_program] [0m2025/01/07 03:01:25 ERROR failed to receive data error="accept tcp [::]:6380: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:25 ERROR error running redis error="error starting server: accept tcp [::]:6380: use of closed network connection"
+[33m[tester::#JU6] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#FJ0] [0m[94mRunning tests for Stage #FJ0 (Replication - Receive handshake (1/2))[0m
+[33m[tester::#FJ0] [0m[94m$ ./spawn_redis_server.sh --port 6379[0m
+[33m[your_program] [0m2025/01/07 03:01:25 INFO Redis started port=6379
+[33m[tester::#FJ0] [0m[94mclient: $ redis-cli PING[0m
+[33m[tester::#FJ0] [0m[36mclient: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35760
+[33m[tester::#FJ0] [0m[36mclient: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#FJ0] [0m[36mclient: Received RESP simple string: "PONG"[0m
+[33m[tester::#FJ0] [0m[92mReceived "PONG"[0m
+[33m[tester::#FJ0] [0m[94mclient: > REPLCONF listening-port 6380[0m
+[33m[tester::#FJ0] [0m[36mclient: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n"[0m
+[33m[tester::#FJ0] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#FJ0] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#FJ0] [0m[92mReceived "OK"[0m
+[33m[tester::#FJ0] [0m[94mclient: > REPLCONF capa psync2[0m
+[33m[tester::#FJ0] [0m[36mclient: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#FJ0] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#FJ0] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#FJ0] [0m[92mReceived "OK"[0m
+[33m[tester::#FJ0] [0m[92mTest passed.[0m
+[33m[tester::#FJ0] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:25 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:25 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#FJ0] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#VM3] [0m[94mRunning tests for Stage #VM3 (Replication - Receive handshake (2/2))[0m
+[33m[tester::#VM3] [0m[94m$ ./spawn_redis_server.sh --port 6379[0m
+[33m[your_program] [0m2025/01/07 03:01:25 INFO Redis started port=6379
+[33m[tester::#VM3] [0m[94mclient: $ redis-cli PING[0m
+[33m[tester::#VM3] [0m[36mclient: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#VM3] [0m[36mclient: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#VM3] [0m[36mclient: Received RESP simple string: "PONG"[0m
+[33m[your_program] [0mNew connection from [::1]:35794
+[33m[tester::#VM3] [0m[92mReceived "PONG"[0m
+[33m[tester::#VM3] [0m[94mclient: > REPLCONF listening-port 6380[0m
+[33m[tester::#VM3] [0m[36mclient: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n"[0m
+[33m[tester::#VM3] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#VM3] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#VM3] [0m[92mReceived "OK"[0m
+[33m[tester::#VM3] [0m[94mclient: > REPLCONF capa psync2[0m
+[33m[tester::#VM3] [0m[36mclient: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#VM3] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#VM3] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#VM3] [0m[92mReceived "OK"[0m
+[33m[tester::#VM3] [0m[94mclient: > PSYNC ? -1[0m
+[33m[tester::#VM3] [0m[36mclient: Sent bytes: "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n"[0m
+[33m[tester::#VM3] [0m[36mclient: Received bytes: "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0\r\n"[0m
+[33m[tester::#VM3] [0m[36mclient: Received RESP simple string: "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#VM3] [0m[92mReceived "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#VM3] [0m[92mTest passed.[0m
+[33m[tester::#VM3] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:25 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:25 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#VM3] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#CF8] [0m[94mRunning tests for Stage #CF8 (Replication - Empty RDB Transfer)[0m
+[33m[tester::#CF8] [0m[94m$ ./spawn_redis_server.sh --port 6379[0m
+[33m[your_program] [0m2025/01/07 03:01:26 INFO Redis started port=6379
+[33m[tester::#CF8] [0m[94mclient: $ redis-cli PING[0m
+[33m[tester::#CF8] [0m[36mclient: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35846
+[33m[tester::#CF8] [0m[36mclient: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#CF8] [0m[36mclient: Received RESP simple string: "PONG"[0m
+[33m[tester::#CF8] [0m[92mReceived "PONG"[0m
+[33m[tester::#CF8] [0m[94mclient: > REPLCONF listening-port 6380[0m
+[33m[tester::#CF8] [0m[36mclient: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n"[0m
+[33m[tester::#CF8] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#CF8] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#CF8] [0m[92mReceived "OK"[0m
+[33m[tester::#CF8] [0m[94mclient: > REPLCONF capa psync2[0m
+[33m[tester::#CF8] [0m[36mclient: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#CF8] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#CF8] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#CF8] [0m[92mReceived "OK"[0m
+[33m[tester::#CF8] [0m[94mclient: > PSYNC ? -1[0m
+[33m[tester::#CF8] [0m[36mclient: Sent bytes: "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n"[0m
+[33m[tester::#CF8] [0m[36mclient: Received bytes: "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0\r\n"[0m
+[33m[tester::#CF8] [0m[36mclient: Received RESP simple string: "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#CF8] [0m[92mReceived "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#CF8] [0m[36mReading RDB file...[0m
+[33m[tester::#CF8] [0m[36mclient: Received bytes: "$88\r\nREDIS0011\xfa\tredis-ver\x057.2.0\xfa\nredis-bits\xc0@\xfa\x05ctime\xc2m\b\xbce\xfa\bused-mem°\xc4\x10\x00\xfa\baof-base\xc0\x00\xff\xf0n;\xfe\xc0\xffZ\xa2"[0m
+[33m[tester::#CF8] [0m[92mReceived RDB file[0m
+[33m[tester::#CF8] [0m[92mTest passed.[0m
+[33m[tester::#CF8] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:26 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:26 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#CF8] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#ZN8] [0m[94mRunning tests for Stage #ZN8 (Replication - Single-replica propagation)[0m
+[33m[tester::#ZN8] [0m[94m$ ./spawn_redis_server.sh --port 6379[0m
+[33m[your_program] [0m2025/01/07 03:01:26 INFO Redis started port=6379
+[33m[tester::#ZN8] [handshake] [0m[94mreplica: $ redis-cli PING[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received RESP simple string: "PONG"[0m
+[33m[your_program] [0mNew connection from [::1]:35880
+[33m[your_program] [0mNew connection from [::1]:35892
+[33m[tester::#ZN8] [handshake] [0m[92mReceived "PONG"[0m
+[33m[tester::#ZN8] [handshake] [0m[94mreplica: > REPLCONF listening-port 6380[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received bytes: "+OK\r\n"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received RESP simple string: "OK"[0m
+[33m[tester::#ZN8] [handshake] [0m[92mReceived "OK"[0m
+[33m[tester::#ZN8] [handshake] [0m[94mreplica: > REPLCONF capa psync2[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received bytes: "+OK\r\n"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received RESP simple string: "OK"[0m
+[33m[tester::#ZN8] [handshake] [0m[92mReceived "OK"[0m
+[33m[tester::#ZN8] [handshake] [0m[94mreplica: > PSYNC ? -1[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Sent bytes: "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received bytes: "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0\r\n"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received RESP simple string: "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#ZN8] [handshake] [0m[92mReceived "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#ZN8] [handshake] [0m[36mReading RDB file...[0m
+[33m[tester::#ZN8] [handshake] [0m[36mreplica: Received bytes: "$88\r\nREDIS0011\xfa\tredis-ver\x057.2.0\xfa\nredis-bits\xc0@\xfa\x05ctime\xc2m\b\xbce\xfa\bused-mem°\xc4\x10\x00\xfa\baof-base\xc0\x00\xff\xf0n;\xfe\xc0\xffZ\xa2"[0m
+[33m[tester::#ZN8] [handshake] [0m[92mReceived RDB file[0m
+[33m[tester::#ZN8] [test] [0m[94mclient: $ redis-cli SET foo 123[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\n123\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#ZN8] [test] [0m[92mReceived "OK"[0m
+[33m[tester::#ZN8] [test] [0m[94mclient: > SET bar 456[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbar\r\n$3\r\n456\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#ZN8] [test] [0m[92mReceived "OK"[0m
+[33m[tester::#ZN8] [test] [0m[94mclient: > SET baz 789[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbaz\r\n$3\r\n789\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#ZN8] [test] [0m[92mReceived "OK"[0m
+[33m[tester::#ZN8] [test] [0m[92mSent 3 SET commands to master successfully.[0m
+[33m[tester::#ZN8] [test] [0m[94mreplica: Expecting "SET foo 123" to be propagated[0m
+[33m[tester::#ZN8] [test] [0m[36mreplica: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\n123\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mreplica: Received RESP array: ["SET", "foo", "123"][0m
+[33m[tester::#ZN8] [test] [0m[92mReceived ["SET", "foo", "123"][0m
+[33m[tester::#ZN8] [test] [0m[94mreplica: Expecting "SET bar 456" to be propagated[0m
+[33m[tester::#ZN8] [test] [0m[36mreplica: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbar\r\n$3\r\n456\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mreplica: Received RESP array: ["SET", "bar", "456"][0m
+[33m[tester::#ZN8] [test] [0m[92mReceived ["SET", "bar", "456"][0m
+[33m[tester::#ZN8] [test] [0m[94mreplica: Expecting "SET baz 789" to be propagated[0m
+[33m[tester::#ZN8] [test] [0m[36mreplica: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbaz\r\n$3\r\n789\r\n"[0m
+[33m[tester::#ZN8] [test] [0m[36mreplica: Received RESP array: ["SET", "baz", "789"][0m
+[33m[tester::#ZN8] [test] [0m[92mReceived ["SET", "baz", "789"][0m
+[33m[tester::#ZN8] [0m[92mTest passed.[0m
+[33m[tester::#ZN8] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:26 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:26 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#ZN8] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#HD5] [0m[94mRunning tests for Stage #HD5 (Replication - Multi Replica Command Propagation)[0m
+[33m[tester::#HD5] [0m[94m$ ./spawn_redis_server.sh --port 6379[0m
+[33m[your_program] [0m2025/01/07 03:01:26 INFO Redis started port=6379
+[33m[tester::#HD5] [handshake] [0m[36mCreating replica: 1[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-1: $ redis-cli PING[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35940
+[33m[your_program] [0mNew connection from [::1]:35946
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received RESP simple string: "PONG"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "PONG"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-1: > REPLCONF listening-port 6380[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-1: > REPLCONF capa psync2[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-1: > PSYNC ? -1[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Sent bytes: "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received bytes: "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received RESP simple string: "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#HD5] [handshake] [0m[36mReading RDB file...[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-1: Received bytes: "$88\r\nREDIS0011\xfa\tredis-ver\x057.2.0\xfa\nredis-bits\xc0@\xfa\x05ctime\xc2m\b\xbce\xfa\bused-mem°\xc4\x10\x00\xfa\baof-base\xc0\x00\xff\xf0n;\xfe\xc0\xffZ\xa2"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived RDB file[0m
+[33m[tester::#HD5] [0m[36mCreating replica: 2[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-2: $ redis-cli PING[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35962
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received RESP simple string: "PONG"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "PONG"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-2: > REPLCONF listening-port 6381[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6381\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-2: > REPLCONF capa psync2[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-2: > PSYNC ? -1[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Sent bytes: "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received bytes: "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received RESP simple string: "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#HD5] [handshake] [0m[36mReading RDB file...[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-2: Received bytes: "$88\r\nREDIS0011\xfa\tredis-ver\x057.2.0\xfa\nredis-bits\xc0@\xfa\x05ctime\xc2m\b\xbce\xfa\bused-mem°\xc4\x10\x00\xfa\baof-base\xc0\x00\xff\xf0n;\xfe\xc0\xffZ\xa2"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived RDB file[0m
+[33m[tester::#HD5] [0m[36mCreating replica: 3[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-3: $ redis-cli PING[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Sent bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[your_program] [0mNew connection from [::1]:35964
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received bytes: "+PONG\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received RESP simple string: "PONG"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "PONG"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-3: > REPLCONF listening-port 6382[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6382\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-3: > REPLCONF capa psync2[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Sent bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [handshake] [0m[94mreplica-3: > PSYNC ? -1[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Sent bytes: "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received bytes: "+FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0\r\n"[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received RESP simple string: "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived "FULLRESYNC 8371b4fb1155b71f4a04d3e1bc3e18c4a990aeeb 0"[0m
+[33m[tester::#HD5] [handshake] [0m[36mReading RDB file...[0m
+[33m[tester::#HD5] [handshake] [0m[36mreplica-3: Received bytes: "$88\r\nREDIS0011\xfa\tredis-ver\x057.2.0\xfa\nredis-bits\xc0@\xfa\x05ctime\xc2m\b\xbce\xfa\bused-mem°\xc4\x10\x00\xfa\baof-base\xc0\x00\xff\xf0n;\xfe\xc0\xffZ\xa2"[0m
+[33m[tester::#HD5] [handshake] [0m[92mReceived RDB file[0m
+[33m[tester::#HD5] [test] [0m[94mclient: $ redis-cli SET foo 123[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\n123\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [test] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [test] [0m[94mclient: > SET bar 456[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbar\r\n$3\r\n456\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [test] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [test] [0m[94mclient: > SET baz 789[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbaz\r\n$3\r\n789\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Received bytes: "+OK\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mclient: Received RESP simple string: "OK"[0m
+[33m[tester::#HD5] [test] [0m[92mReceived "OK"[0m
+[33m[tester::#HD5] [test] [0m[94mTesting Replica: 1/3[0m
+[33m[tester::#HD5] [test] [0m[94mreplica-1: Expecting "SET foo 123" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-1: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\n123\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-1: Received RESP array: ["SET", "foo", "123"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "foo", "123"][0m
+[33m[tester::#HD5] [test] [0m[94mreplica-1: Expecting "SET bar 456" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-1: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbar\r\n$3\r\n456\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-1: Received RESP array: ["SET", "bar", "456"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "bar", "456"][0m
+[33m[tester::#HD5] [test] [0m[94mreplica-1: Expecting "SET baz 789" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-1: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbaz\r\n$3\r\n789\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-1: Received RESP array: ["SET", "baz", "789"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "baz", "789"][0m
+[33m[tester::#HD5] [test] [0m[94mTesting Replica: 2/3[0m
+[33m[tester::#HD5] [test] [0m[94mreplica-2: Expecting "SET foo 123" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-2: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\n123\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-2: Received RESP array: ["SET", "foo", "123"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "foo", "123"][0m
+[33m[tester::#HD5] [test] [0m[94mreplica-2: Expecting "SET bar 456" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-2: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbar\r\n$3\r\n456\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-2: Received RESP array: ["SET", "bar", "456"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "bar", "456"][0m
+[33m[tester::#HD5] [test] [0m[94mreplica-2: Expecting "SET baz 789" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-2: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbaz\r\n$3\r\n789\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-2: Received RESP array: ["SET", "baz", "789"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "baz", "789"][0m
+[33m[tester::#HD5] [test] [0m[94mTesting Replica: 3/3[0m
+[33m[tester::#HD5] [test] [0m[94mreplica-3: Expecting "SET foo 123" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-3: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\n123\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-3: Received RESP array: ["SET", "foo", "123"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "foo", "123"][0m
+[33m[tester::#HD5] [test] [0m[94mreplica-3: Expecting "SET bar 456" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-3: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbar\r\n$3\r\n456\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-3: Received RESP array: ["SET", "bar", "456"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "bar", "456"][0m
+[33m[tester::#HD5] [test] [0m[94mreplica-3: Expecting "SET baz 789" to be propagated[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-3: Received bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbaz\r\n$3\r\n789\r\n"[0m
+[33m[tester::#HD5] [test] [0m[36mreplica-3: Received RESP array: ["SET", "baz", "789"][0m
+[33m[tester::#HD5] [test] [0m[92mReceived ["SET", "baz", "789"][0m
+[33m[tester::#HD5] [0m[92mTest passed.[0m
+[33m[tester::#HD5] [0m[36mTerminating program[0m
+[33m[your_program] [0mShutting down server...
+[33m[your_program] [0m2025/01/07 03:01:26 ERROR failed to receive data error="accept tcp [::]:6379: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:26 ERROR error running redis error="error starting server: accept tcp [::]:6379: use of closed network connection"
+[33m[tester::#HD5] [0m[36mProgram terminated successfully[0m
+
+[33m[tester::#YG4] [0m[94mRunning tests for Stage #YG4 (Replication - Command Processing)[0m
+[33m[tester::#YG4] [0m[94mMaster is running on port 6379[0m
+[33m[tester::#YG4] [0m[94m$ ./spawn_redis_server.sh --port 6380 --replicaof "localhost 6379"[0m
+[33m[tester::#YG4] [handshake] [0m[94mmaster: Waiting for replica to initiate handshake with "PING" command[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Received bytes: "*1\r\n$4\r\nPING\r\n"[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Received RESP array: ["PING"][0m
+[33m[tester::#YG4] [handshake] [0m[92mReceived ["PING"][0m
+[33m[tester::#YG4] [handshake] [0m[94mmaster: Sent "PONG"[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Sent bytes: "+PONG\r\n"[0m
+[33m[tester::#YG4] [handshake] [0m[94mmaster: Waiting for replica to send "REPLCONF listening-port 6380" command[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Received bytes: "*3\r\n$8\r\nREPLCONF\r\n$14\r\nlistening-port\r\n$4\r\n6380\r\n"[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Received RESP array: ["REPLCONF", "listening-port", "6380"][0m
+[33m[tester::#YG4] [handshake] [0m[92mReceived ["REPLCONF", "listening-port", "6380"][0m
+[33m[tester::#YG4] [handshake] [0m[94mmaster: Sent "OK"[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Sent bytes: "+OK\r\n"[0m
+[33m[tester::#YG4] [handshake] [0m[94mmaster: Waiting for replica to send "REPLCONF capa" command[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Received bytes: "*3\r\n$8\r\nREPLCONF\r\n$4\r\ncapa\r\n$6\r\npsync2\r\n"[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Received RESP array: ["REPLCONF", "capa", "psync2"][0m
+[33m[tester::#YG4] [handshake] [0m[92mReceived ["REPLCONF", "capa", "psync2"][0m
+[33m[tester::#YG4] [handshake] [0m[94mmaster: Sent "OK"[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Sent bytes: "+OK\r\n"[0m
+[33m[tester::#YG4] [handshake] [0m[94mmaster: Waiting for replica to send "PSYNC" command[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Received bytes: "*3\r\n$5\r\nPSYNC\r\n$1\r\n?\r\n$2\r\n-1\r\n"[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Received RESP array: ["PSYNC", "?", "-1"][0m
+[33m[tester::#YG4] [handshake] [0m[92mReceived ["PSYNC", "?", "-1"][0m
+[33m[tester::#YG4] [handshake] [0m[94mmaster: Sent "FULLRESYNC 75cd7bc10c49047e0d163660f3b90625b1af31dc 0"[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Sent bytes: "+FULLRESYNC 75cd7bc10c49047e0d163660f3b90625b1af31dc 0\r\n"[0m
+[33m[tester::#YG4] [handshake] [0m[36mSending RDB file...[0m
+[33m[tester::#YG4] [handshake] [0m[36mmaster: Sent bytes: "$88\r\nREDIS0011\xfa\tredis-ver\x057.2.0\xfa\nredis-bits\xc0@\xfa\x05ctime\xc2m\b\xbce\xfa\bused-mem°\xc4\x10\x00\xfa\baof-base\xc0\x00\xff\xf0n;\xfe\xc0\xffZ\xa2"[0m
+[33m[tester::#YG4] [handshake] [0m[92mSent RDB file.[0m
+[33m[your_program] [0m2025/01/07 03:01:27 INFO PSYNC response resp="+FULLRESYNC 75cd7bc10c49047e0d163660f3b90625b1af31dc 0\r\n"
+[33m[your_program] [0m2025/01/07 03:01:27 INFO Redis started port=6380
+[33m[your_program] [0mNew connection from [::1]:6379
+[33m[tester::#YG4] [propagation] [0m[94mmaster: > SET foo 123[0m
+[33m[tester::#YG4] [propagation] [0m[36mmaster: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\n123\r\n"[0m
+[33m[tester::#YG4] [propagation] [0m[94mmaster: > SET bar 456[0m
+[33m[tester::#YG4] [propagation] [0m[36mmaster: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbar\r\n$3\r\n456\r\n"[0m
+[33m[tester::#YG4] [propagation] [0m[94mmaster: > SET baz 789[0m
+[33m[tester::#YG4] [propagation] [0m[36mmaster: Sent bytes: "*3\r\n$3\r\nSET\r\n$3\r\nbaz\r\n$3\r\n789\r\n"[0m
+[33m[tester::#YG4] [test] [0m[94mGetting key foo[0m
+[33m[tester::#YG4] [test] [0m[94mclient: $ redis-cli GET foo[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Sent bytes: "*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"[0m
+[33m[your_program] [0mNew connection from 127.0.0.1:40124
+[33m[tester::#YG4] [test] [0m[36mclient: Received bytes: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received RESP null bulk string: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[94mRetrying... (1/5 attempts)[0m
+[33m[tester::#YG4] [test] [0m[94mclient: > GET foo[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Sent bytes: "*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received bytes: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received RESP null bulk string: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[94mRetrying... (2/5 attempts)[0m
+[33m[tester::#YG4] [test] [0m[94mclient: > GET foo[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Sent bytes: "*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received bytes: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received RESP null bulk string: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[94mRetrying... (3/5 attempts)[0m
+[33m[tester::#YG4] [test] [0m[94mclient: > GET foo[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Sent bytes: "*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received bytes: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received RESP null bulk string: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[94mRetrying... (4/5 attempts)[0m
+[33m[tester::#YG4] [test] [0m[94mclient: > GET foo[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Sent bytes: "*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received bytes: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received RESP null bulk string: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[94mRetrying... (5/5 attempts)[0m
+[33m[tester::#YG4] [test] [0m[94mclient: > GET foo[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Sent bytes: "*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received bytes: "$-1\r\n"[0m
+[33m[tester::#YG4] [test] [0m[36mclient: Received RESP null bulk string: "$-1\r\n"[0m
+[33m[tester::#YG4] [0m[91mExpected simple string or bulk string, got NIL[0m
+[33m[tester::#YG4] [0m[91mTest failed[0m
+[33m[tester::#YG4] [0m[36mTerminating program[0m
+[33m[your_program] [0m2025/01/07 03:01:30 ERROR failed to receive data error="accept tcp [::]:6380: use of closed network connection"
+[33m[your_program] [0m2025/01/07 03:01:30 ERROR error running redis error="error starting server: accept tcp [::]:6380: use of closed network connection"
+[33m[your_program] [0mShutting down master connection...
+[33m[your_program] [0mShutting down server...
+[33m[tester::#YG4] [0m[36mProgram terminated successfully[0m
+
+View our article on debugging test failures: https://codecrafters.io/debug

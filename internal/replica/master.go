@@ -2,60 +2,17 @@ package replica
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"log/slog"
 	"net"
+	"strconv"
 	"strings"
-
-	"github.com/codecrafters-io/redis-starter-go/internal/encoder"
 )
 
-type Client struct {
-	Address string
-	Port    int
-	Conn    net.Conn
-}
+func NewMasterClient(ctx context.Context, replicaFlag string, listeningPort int) (*Client, error) {
+	masterAddress, masterPort := parseReplicaFlag(replicaFlag)
 
-func (m *Client) Write(msg []byte) error {
-	_, err := m.Conn.Write(msg)
-	return err
-}
-
-func (m *Client) Close() {
-	m.Conn.Close()
-}
-
-func (m *Client) SendMessageAndGetResponse(req string) (string, error) {
-	encodedReq := encoder.EncodeArrayBulkString(strings.Split(req, " "))
-	_, err := (m.Conn).Write(encodedReq)
-	if err != nil {
-		return "", fmt.Errorf("error sending message %s: %w", req, err)
-	}
-
-	message, err := bufio.NewReader(m.Conn).ReadString('\n')
-	if err != nil {
-		return "", fmt.Errorf("error getting reply: %w", err)
-	}
-	return message, nil
-}
-
-func (m *Client) SendMessageAndExpectResponse(req, resp string) error {
-	encodedReq := encoder.EncodeArrayBulkString(strings.Split(req, " "))
-	_, err := (m.Conn).Write(encodedReq)
-	if err != nil {
-		return fmt.Errorf("error sending message %s: %w", req, err)
-	}
-
-	expectedResp := encoder.EncodeSimpleString(resp)
-	message, _ := bufio.NewReader(m.Conn).ReadString('\n')
-	if string(expectedResp) != message {
-		return fmt.Errorf("expected response %s, got %s", resp, message)
-	}
-
-	return nil
-}
-
-func NewMasterClient(masterAddress string, masterPort, listeningPort int) (*Client, error) {
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", masterAddress, masterPort))
 	if err != nil {
 		return nil, fmt.Errorf("error establishing connection to %s:%d: %w", masterAddress, masterPort, err)
@@ -66,6 +23,12 @@ func NewMasterClient(masterAddress string, masterPort, listeningPort int) (*Clie
 		Port:    masterPort,
 		Conn:    conn,
 	}
+
+	go func() {
+		<-ctx.Done()
+		fmt.Println("Shutting down master connection...")
+		client.Close()
+	}()
 
 	if err = client.SendMessageAndExpectResponse("PING", "PONG"); err != nil {
 		return nil, fmt.Errorf("error sending PING: %w", err)
@@ -87,12 +50,30 @@ func NewMasterClient(masterAddress string, masterPort, listeningPort int) (*Clie
 	}
 	slog.Info("PSYNC response", slog.String("resp", resp))
 
+	message, _ := bufio.NewReader(conn).ReadString('\n')
+	fmt.Println(message)
+
 	return client, nil
 }
 
-func NewReplicaClient(conn net.Conn, listeningPort int) (*Client, error) {
-	return &Client{
-		Port: listeningPort,
-		Conn: conn,
-	}, nil
+func parseReplicaFlag(replicaFlag string) (string, int) {
+	if replicaFlag == "" {
+		return "", 0
+	}
+
+	chunks := strings.SplitN(replicaFlag, " ", 2)
+
+	address := chunks[0]
+	portStr := chunks[1]
+
+	if address == "" || portStr == "" {
+		return "", 0
+	}
+
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		return "", 0
+	}
+
+	return address, port
 }
