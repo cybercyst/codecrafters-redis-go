@@ -173,7 +173,7 @@ func (srv *RedisServer) Write(conn net.Conn, msg []byte) error {
 }
 
 func (srv *RedisServer) handleConnection(conn net.Conn) {
-	defer conn.Close()
+	// defer conn.Close()
 
 	fmt.Printf("New connection from %s\n", conn.RemoteAddr().String())
 
