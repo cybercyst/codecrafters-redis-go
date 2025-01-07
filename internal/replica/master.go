@@ -1,7 +1,6 @@
 package replica
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"log/slog"
@@ -49,9 +48,6 @@ func NewMasterClient(ctx context.Context, replicaFlag string, listeningPort int)
 		return nil, fmt.Errorf("error sending PSYNC: %w", err)
 	}
 	slog.Info("PSYNC response", slog.String("resp", resp))
-
-	message, _ := bufio.NewReader(conn).ReadString('\n')
-	fmt.Println(message)
 
 	return client, nil
 }

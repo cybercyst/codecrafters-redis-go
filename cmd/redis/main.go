@@ -35,7 +35,6 @@ func run(ctx context.Context) error {
 			return fmt.Errorf("error connecting to master: %w", err)
 		}
 		masterClient = m
-		defer m.Close()
 	}
 
 	srv := server.NewRedisServer("0.0.0.0", *portFlag, masterClient)
