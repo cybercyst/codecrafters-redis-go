@@ -64,7 +64,11 @@ func (srv *RedisServer) Listen(ctx context.Context) error {
 	}()
 
 	if srv.IsSlave() {
-		go srv.handleConnection(srv.masterClient.Conn)
+		go func() {
+			for {
+				srv.handleConnection(srv.masterClient.Conn)
+			}
+		}()
 	}
 
 	for {
